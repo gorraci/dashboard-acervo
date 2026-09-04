@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        claro: { 500: '#da291c', 600: '#b51f14', 700: '#91170f' } // Vermelho Oficial Claro
+                        claro: { 500: '#da291c', 600: '#b51f14', 700: '#91170f' }
                     }
                 }
             }
@@ -23,35 +23,36 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-claro-500 selection:text-white">
 
-    <!-- HEADER / NAVBAR -->
-    <header class="bg-white dark:bg-slate-900 shadow-md sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="bg-claro-500 text-white p-2.5 rounded-xl shadow-md">
-                    <i class="fa-solid fa-square-check text-xl"></i>
+    <!-- HEADER / NAVBAR PROFISSIONAL -->
+    <header class="bg-slate-900/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="bg-gradient-to-br from-claro-500 to-claro-700 text-white p-3 rounded-2xl shadow-lg shadow-claro-500/20">
+                    <i class="fa-solid fa-square-check text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight tracking-wide">Controle de Qualidade SP</h1>
-                    <p class="text-xs text-claro-500 font-semibold uppercase tracking-wider">Claro Brasil</p>
+                    <h1 class="font-black text-xl tracking-wide bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Controle de Qualidade SP</h1>
+                    <p class="text-xs text-claro-500 font-bold uppercase tracking-widest">Claro Brasil • Unidade São Paulo</p>
                 </div>
             </div>
 
+            <!-- TÍTULOS / LINKS RÁPIDOS NO TOPO (LADO A LADO) -->
+            <nav class="hidden lg:flex items-center gap-1 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80 shadow-inner">
+                <a href="#inicio" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-house text-claro-500 mr-1.5"></i> Início</a>
+                <a href="#painel-busca" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-magnifying-glass text-claro-500 mr-1.5"></i> Acervo & Busca</a>
+                <a href="#como-usar" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-circle-info text-claro-500 mr-1.5"></i> Orientações</a>
+                <a href="#suporte-tec" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-headset text-claro-500 mr-1.5"></i> Suporte SP</a>
+            </nav>
+
             <div class="flex items-center space-x-3">
-                <!-- Botão Dark Mode -->
-                <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">
-                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold items-center gap-2 transition border border-slate-700/60 shadow-sm flex">
+                    <i class="fa-solid fa-gear text-claro-500"></i> Gerenciar
                 </button>
 
-                <!-- Botão Adicionar/Gerenciar -->
-                <button onclick="openAdminModal()" class="hidden md:flex bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-2 rounded-lg text-xs font-medium items-center gap-2 transition">
-                    <i class="fa-solid fa-gear"></i> Gerenciar Itens
-                </button>
-
-                <!-- Área de Autenticação (Login / Cadastro) -->
                 <div id="auth-container">
-                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center gap-2">
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-claro-500/30 flex items-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
                     </button>
                 </div>
@@ -59,107 +60,248 @@
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        
-        <!-- BARRA DE PESQUISA E FILTROS -->
-        <div class="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center">
-            <div class="relative w-full md:w-96">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+    <!-- BANNER DE DESTAQUE DINÂMICO (COM IMAGEM/GRADIENTE MODERNO) -->
+    <section id="inicio" class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-b border-slate-800/80 py-12 lg:py-16">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#da291c_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="max-w-2xl">
+                <span class="inline-flex items-center gap-1.5 bg-claro-500/10 text-claro-500 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-4 border border-claro-500/20">
+                    <span class="w-2 h-2 rounded-full bg-claro-500 animate-pulse"></span> Sistema Operacional Ativo
                 </span>
-                <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Pesquisar relatórios, processos..." 
-                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-claro-500 text-sm">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 text-white leading-tight">
+                    Central Inteligente de <span class="bg-gradient-to-r from-claro-500 to-red-600 bg-clip-text text-transparent">Qualidade e Processos</span>
+                </h2>
+                <p class="text-sm sm:text-base text-slate-400 mb-6 leading-relaxed">
+                    Acesse o acervo completo de 2GB de documentação técnica, relatórios estratégicos e padrões operacionais da Claro SP. Navegue pelas categorias ou utilize o painel restrito para downloads seguros.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#painel-busca" class="bg-claro-500 hover:bg-claro-600 text-white font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-claro-500/25 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open"></i> Explorar Acervo
+                    </a>
+                    <button onclick="openAdminModal()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-claro-500"></i> Cadastrar Links
+                    </button>
+                </div>
+            </div>
+            <div class="w-full md:w-auto flex justify-center">
+                <div class="relative bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-3xl border border-slate-800 shadow-2xl max-w-sm w-full">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono">claro-sp-v2.0.exe</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-claro-500/10 text-claro-500 p-2 rounded-lg"><i class="fa-solid fa-database"></i></div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-200">Volume Total</h4>
+                                    <p class="text-[10px] text-slate-400">2 GB Indexados</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Online</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-claro-500/10 text-claro-500 p-2 rounded-lg"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-200">Segurança</h4>
+                                    <p class="text-[10px] text-slate-400">Proteção Supabase</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-claro-500 bg-claro-500/10 px-2 py-0.5 rounded">Ativo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL COM LAYOUT DE TRÊS COLUNAS (LATERAIS + CENTRO) -->
+    <main id="painel-busca" class="max-w-7xl mx-auto px-4 py-10 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- LATERAL ESQUERDA: ATALHOS E CATEGORIAS FIXAS -->
+        <aside class="lg:col-span-3 space-y-6">
+            <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-xl sticky top-24">
+                <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-claro-500"></i> Navegação Rápida
+                </h3>
+                <div class="space-y-2" id="category-filters-sidebar">
+                    <!-- Gerado dinamicamente -->
+                </div>
+
+                <hr class="border-slate-800 my-5">
+
+                <div class="bg-gradient-to-br from-claro-500/10 to-transparent p-4 rounded-xl border border-claro-500/20">
+                    <h4 class="text-xs font-bold text-white mb-1 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-claro-500"></i> Dica Útil</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Faça login no topo da página para liberar o acesso direto aos links do Google Drive com segurança.
+                    </p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTRO: BUSCA E VITRINE DE CARDS -->
+        <section class="lg:col-span-6 space-y-6">
+            <!-- BARRA DE PESQUISA MODERNA -->
+            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-claro-500"></i>
+                    </span>
+                    <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Pesquisar relatórios, POPs, manuais ou pastas..." 
+                        class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-800 bg-slate-950 focus:outline-none focus:ring-2 focus:ring-claro-500 text-sm text-slate-100 placeholder-slate-500 shadow-inner">
+                </div>
             </div>
 
-            <!-- Filtros por Categoria -->
-            <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0" id="category-filters">
+            <!-- FILTROS SUPERIORES MÓVEIS -->
+            <div class="flex gap-2 overflow-x-auto pb-1" id="category-filters">
                 <!-- Preenchido via JS -->
             </div>
-        </div>
 
-        <!-- GRID DE CONTEÚDOS -->
-        <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Cards injetados via JS -->
-        </div>
+            <!-- GRID DE CONTEÚDOS (CARDS) -->
+            <div id="content-grid" class="grid grid-cols-1 gap-5">
+                <!-- Cards injetados via JS -->
+            </div>
+        </section>
+
+        <!-- LATERAL DIREITA: ESTATÍSTICAS E SUPORTE -->
+        <aside class="lg:col-span-3 space-y-6">
+            <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-5 sticky top-24">
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-claro-500"></i> Status do Servidor
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800/80">
+                            <span class="text-slate-400">Repositório:</span>
+                            <span class="font-bold text-white">Vercel Edge</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800/80">
+                            <span class="text-slate-400">Banco de Dados:</span>
+                            <span class="font-bold text-claro-500">Supabase</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800/80">
+                            <span class="text-slate-400">Armazenamento:</span>
+                            <span class="font-bold text-emerald-400">Google Drive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="como-usar" class="pt-2 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i class="fa-solid fa-circle-question text-claro-500"></i> Como funciona?</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Clique em <b>Gerenciar</b> para adicionar novos links do seu Google Drive. O sistema organiza tudo instantaneamente nas categorias.
+                    </p>
+                </div>
+
+                <div id="suporte-tec" class="pt-2 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i class="fa-solid fa-headset text-claro-500"></i> Suporte Técnico</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Controle de Qualidade SP • Gestão Interna de Documentação Corporativa.
+                    </p>
+                </div>
+            </div>
+        </aside>
 
     </main>
 
     <!-- MODAL DE LOGIN / CADASTRO DE USUÁRIO -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-slate-200 dark:border-slate-800">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                <i class="fa-solid fa-xmark text-lg"></i>
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-7 relative border border-slate-800">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
             
-            <h3 id="auth-modal-title" class="text-xl font-bold mb-1">Acesse sua Conta</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Faça login ou cadastre-se para liberar o download dos arquivos.</p>
+            <div class="mb-6">
+                <div class="bg-claro-500/10 text-claro-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-3 border border-claro-500/20">
+                    <i class="fa-solid fa-lock text-lg"></i>
+                </div>
+                <h3 id="auth-modal-title" class="text-xl font-black text-white">Acesse sua Conta</h3>
+                <p class="text-xs text-slate-400 mt-1">Faça login ou cadastre-se para liberar o acesso aos arquivos do Google Drive.</p>
+            </div>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">E-mail</label>
-                    <input type="email" id="auth-email" required placeholder="seu.email@claro.com.br" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:ring-2 focus:ring-claro-500">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">E-mail Corporativo</label>
+                    <input type="email" id="auth-email" required placeholder="seu.email@claro.com.br" class="w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-sm text-slate-100 focus:ring-2 focus:ring-claro-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Senha</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:ring-2 focus:ring-claro-500">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Senha</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-sm text-slate-100 focus:ring-2 focus:ring-claro-500 focus:outline-none">
                 </div>
-                <button type="submit" id="auth-submit-btn" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-medium py-2.5 rounded-lg text-sm shadow transition">Entrar</button>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-claro-500/25 transition">Entrar no Sistema</button>
             </form>
 
-            <div class="mt-4 text-center">
-                <button onclick="toggleAuthMode()" id="auth-toggle-text" class="text-xs text-claro-500 hover:underline font-medium">Não tem uma conta? Cadastre-se</button>
+            <div class="mt-5 text-center">
+                <button onclick="toggleAuthMode()" id="auth-toggle-text" class="text-xs text-claro-500 hover:text-red-400 font-semibold transition">Não tem uma conta? Cadastre-se</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL DE GERENCIAMENTO (ADICIONAR ITENS) -->
-    <div id="admin-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full p-6 relative border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                <i class="fa-solid fa-xmark text-lg"></i>
+    <div id="admin-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-2xl w-full p-7 relative border border-slate-800 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
             
-            <h3 class="text-xl font-bold mb-1">Painel de Gerenciamento de Arquivos</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Cadastre novos arquivos do Google Drive ou OneDrive.</p>
+            <div class="mb-6">
+                <div class="bg-claro-500/10 text-claro-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-3 border border-claro-500/20">
+                    <i class="fa-solid fa-folder-tree text-lg"></i>
+                </div>
+                <h3 class="text-xl font-black text-white">Painel de Gerenciamento</h3>
+                <p class="text-xs text-slate-400 mt-1">Cadastre novos arquivos ou pastas do seu Google Drive para alimentar o painel.</p>
+            </div>
 
-            <form onsubmit="addNewItem(event)" class="space-y-4 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
+            <form onsubmit="addNewItem(event)" class="space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800/80 mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Título do Arquivo</label>
-                        <input type="text" id="new-title" required placeholder="Ex: Relatório Qualidade SP" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                        <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Título do Arquivo / Pasta</label>
+                        <input type="text" id="new-title" required placeholder="Ex: Relatório Qualidade SP" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Categoria (Pasta)</label>
-                        <input type="text" id="new-category" required placeholder="Ex: Relatórios, Processos" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                        <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Categoria / Seção</label>
+                        <input type="text" id="new-category" required placeholder="Ex: Relatórios, Processos" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Link do Drive</label>
-                    <input type="url" id="new-link" required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Link do Google Drive</label>
+                    <input type="url" id="new-link" required placeholder="https://drive.google.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Descrição</label>
-                    <input type="text" id="new-desc" placeholder="Detalhes rápidos..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Descrição Curta</label>
+                    <input type="text" id="new-desc" placeholder="Detalhes rápidos sobre o conteúdo..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
                 </div>
-                <button type="submit" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-medium py-2 rounded-lg text-sm shadow transition">
-                    Adicionar ao Painel
+                <button type="submit" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-claro-500/25 transition">
+                    Adicionar ao Painel Dinâmico
                 </button>
             </form>
 
-            <h4 class="font-semibold text-sm mb-3">Itens Cadastrados</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Itens Cadastrados Atualmente</h4>
             <div id="admin-items-list" class="space-y-2 max-h-48 overflow-y-auto pr-2"></div>
         </div>
     </div>
 
-    <!-- FOOTER CLARO BRASIL -->
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        <p>&copy; 2026 Controle de Qualidade SP - Claro Brasil. Todos os direitos reservados.</p>
+    <!-- FOOTER CORPORATIVO -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 text-center text-xs text-slate-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Controle de Qualidade SP - Claro Brasil. Todos os direitos reservados.</p>
+            <div class="flex items-center gap-4 text-slate-400">
+                <span class="hover:text-white transition cursor-pointer">Termos de Uso</span>
+                <span>•</span>
+                <span class="hover:text-white transition cursor-pointer">Segurança da Informação</span>
+                <span>•</span>
+                <span class="hover:text-white transition cursor-pointer">Suporte Interno</span>
+            </div>
+        </div>
     </footer>
 
     <!-- SCRIPT DA APLICAÇÃO -->
     <script>
-        // CONFIGURAÇÃO DO SUPABASE (Corrigida com aspas)
         const SUPABASE_URL = 'https://ydolovarfsfamgbvcvee.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_UlhHB_H6FOfGJL2d-mOt8Q_XCizbbJT';
         let supabaseClient = null;
@@ -197,57 +339,78 @@
             grid.innerHTML = '';
 
             if (data.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Nenhum arquivo cadastrado.</div>`;
+                grid.innerHTML = `<div class="text-center py-12 text-slate-500 bg-slate-900/50 rounded-2xl border border-slate-800">Nenhum arquivo cadastrado no momento.</div>`;
                 return;
             }
 
             data.forEach(item => {
                 grid.innerHTML += `
-                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-5 shadow-xl hover:border-claro-500/50 transition duration-300 flex flex-col justify-between group">
                         <div>
                             <div class="flex justify-between items-start mb-3">
-                                <span class="bg-claro-500/10 text-claro-500 text-xs px-2.5 py-1 rounded-full font-bold">${item.category}</span>
-                                <span class="text-[10px] text-slate-400">${item.date || ''}</span>
+                                <span class="bg-claro-500/10 text-claro-500 text-[11px] px-3 py-1 rounded-full font-extrabold border border-claro-500/20">${item.category}</span>
+                                <span class="text-[10px] text-slate-500 font-mono"><i class="fa-regular fa-calendar mr-1"></i>${item.date || ''}</span>
                             </div>
-                            <h3 class="font-bold text-base mb-1 text-slate-800 dark:text-slate-100">${item.title}</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${item.description || 'Sem descrição.'}</p>
+                            <h3 class="font-bold text-base mb-1.5 text-white group-hover:text-claro-500 transition">${item.title}</h3>
+                            <p class="text-xs text-slate-400 mb-5 leading-relaxed">${item.description || 'Sem descrição informada.'}</p>
                         </div>
-                        <button onclick="handleDownload('${item.link}')" class="w-full flex items-center justify-center gap-2 bg-claro-500 hover:bg-claro-600 text-white font-medium py-2 rounded-xl text-xs transition shadow-sm">
-                            <i class="fa-solid fa-download"></i> Acessar / Baixar (Protegido)
+                        <button onclick="handleDownload('${item.link}')" class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md shadow-claro-500/20">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> Acessar / Baixar (Protegido)
                         </button>
                     </div>
                 `;
             });
         }
 
-        // Lógica de Proteção de Download por Cadastro/Login
         function handleDownload(link) {
             if (currentUser) {
                 window.open(link, '_blank');
             } else {
-                alert('Atenção: Para acessar os arquivos, é necessário realizar o cadastro ou login na plataforma!');
+                alert('Atenção: Para acessar os arquivos do Google Drive, é necessário realizar o cadastro ou login na plataforma!');
                 openAuthModal();
             }
         }
 
         function renderCategories() {
             const container = document.getElementById('category-filters');
+            const sidebarContainer = document.getElementById('category-filters-sidebar');
             const categories = ['Todos', ...new Set(items.map(i => i.category))];
             
             container.innerHTML = '';
+            sidebarContainer.innerHTML = '';
+
             categories.forEach((cat, index) => {
                 const isActive = index === 0;
+                
+                // Filtros superiores
                 container.innerHTML += `
-                    <button onclick="filterCategory('${cat}', this)" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium ${isActive ? 'bg-claro-500 text-white shadow-sm' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'} whitespace-nowrap transition">${cat}</button>
+                    <button onclick="filterCategory('${cat}', this)" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold ${isActive ? 'bg-claro-500 text-white shadow-lg shadow-claro-500/25' : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'} whitespace-nowrap transition">${cat}</button>
+                `;
+
+                // Sidebar lateral esquerda
+                sidebarContainer.innerHTML += `
+                    <button onclick="filterCategory('${cat}', this)" class="cat-btn-side w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${isActive ? 'bg-claro-500/10 text-claro-500 border border-claro-500/30 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white'} transition flex items-center justify-between">
+                        <span><i class="fa-solid fa-folder text-claro-500 mr-2 text-[10px]"></i> ${cat}</span>
+                        <i class="fa-solid fa-chevron-right text-[9px] opacity-60"></i>
+                    </button>
                 `;
             });
         }
 
         function filterCategory(category, btnElement) {
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = 'cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition';
+            document.querySelectorAll('.cat-btn, .cat-btn-side').forEach(btn => {
+                if(btn.classList.contains('cat-btn')) {
+                    btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 whitespace-nowrap transition';
+                } else {
+                    btn.className = 'cat-btn-side w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white transition flex items-center justify-between';
+                }
             });
-            btnElement.className = 'cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-claro-500 text-white shadow-sm whitespace-nowrap transition';
+
+            if(btnElement.classList.contains('cat-btn')) {
+                btnElement.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-claro-500 text-white shadow-lg shadow-claro-500/25 whitespace-nowrap transition';
+            } else {
+                btnElement.className = 'cat-btn-side w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-claro-500/10 text-claro-500 border border-claro-500/30 font-bold transition flex items-center justify-between';
+            }
 
             if (category === 'Todos') {
                 renderContent(items);
@@ -262,7 +425,6 @@
             renderContent(filtered);
         }
 
-        // Gerenciamento de Usuários (Login / Cadastro)
         async function handleAuthSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
@@ -279,6 +441,10 @@
                         if (error) throw error;
                         alert('Login efetuado com sucesso!');
                     }
+                    
+                    currentUser = { email };
+                    localStorage.setItem('claro_current_user', JSON.stringify(currentUser));
+                    updateAuthUI();
                     closeAuthModal();
                     return;
                 } catch(err) {
@@ -291,7 +457,7 @@
             localStorage.setItem('claro_current_user', JSON.stringify(currentUser));
             updateAuthUI();
             closeAuthModal();
-            alert(isSignUpMode ? 'Cadastro realizado com sucesso! Downloads liberados.' : 'Login realizado com sucesso! Downloads liberados.');
+            alert(isSignUpMode ? 'Cadastro realizado com sucesso! Acessos liberados.' : 'Login realizado com sucesso! Acessos liberados.');
         }
 
         function logout() {
@@ -307,22 +473,21 @@
             if (currentUser) {
                 container.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <span class="text-xs font-medium hidden sm:inline text-slate-400">${currentUser.email}</span>
-                        <button onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                        <span class="text-xs font-semibold hidden sm:inline text-slate-400">${currentUser.email}</span>
+                        <button onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-3.5 py-2 rounded-xl text-xs font-bold transition border border-red-500/20 flex items-center gap-1.5">
                             <i class="fa-solid fa-right-from-bracket"></i> Sair
                         </button>
                     </div>
                 `;
             } else {
                 container.innerHTML = `
-                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center gap-2">
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-claro-500/30 flex items-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
                     </button>
                 `;
             }
         }
 
-        // Adicionar Itens pelo Painel
         function addNewItem(e) {
             e.preventDefault();
             const title = document.getElementById('new-title').value;
@@ -339,7 +504,7 @@
             renderContent(items);
             renderCategories();
             renderAdminList();
-            alert('Arquivo cadastrado com sucesso!');
+            alert('Item cadastrado com sucesso!');
         }
 
         function deleteItem(id) {
@@ -356,23 +521,22 @@
             const listContainer = document.getElementById('admin-items-list');
             listContainer.innerHTML = '';
             if (items.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-slate-400">Nenhum item.</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-slate-500">Nenhum item.</p>`;
                 return;
             }
             items.forEach(item => {
                 listContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs">
+                    <div class="flex justify-between items-center bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs">
                         <div>
-                            <span class="font-bold text-slate-700 dark:text-slate-200">${item.title}</span>
-                            <span class="ml-2 text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500">${item.category}</span>
+                            <span class="font-bold text-white">${item.title}</span>
+                            <span class="ml-2 text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">${item.category}</span>
                         </div>
-                        <button onclick="deleteItem(${item.id})" class="text-red-500 hover:text-red-700 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="deleteItem(${item.id})" class="text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
         }
 
-        // Modais
         function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
         function openAdminModal() { renderAdminList(); document.getElementById('admin-modal').classList.remove('hidden'); }
@@ -381,21 +545,11 @@
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
             document.getElementById('auth-modal-title').textContent = isSignUpMode ? 'Criar Nova Conta' : 'Acesse sua Conta';
-            document.getElementById('auth-submit-btn').textContent = isSignUpMode ? 'Cadastrar e Liberar Downloads' : 'Entrar';
+            document.getElementById('auth-submit-btn').textContent = isSignUpMode ? 'Cadastrar e Liberar Acessos' : 'Entrar no Sistema';
             document.getElementById('auth-toggle-text').textContent = isSignUpMode ? 'Já tem uma conta? Faça login' : 'Não tem uma conta? Cadastre-se';
         }
 
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon';
-            } else {
-                html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
-            }
-        }
+        function toggleDarkMode() {}
     </script>
 </body>
 </html>
