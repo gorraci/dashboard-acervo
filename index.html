@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        claro: { 500: '#da291c', 600: '#b51f14', 700: '#91170f' }
+                        claro: { 500: '#ea1d2c', 600: '#c51422', 700: '#9e0e1a' }
                     }
                 }
             }
@@ -22,37 +22,47 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(234, 29, 44, 0.4);
+        }
+        .bg-cyber-pattern {
+            background-image: linear-gradient(to bottom, rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.95)), url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-claro-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-claro-500 selection:text-white font-sans">
 
-    <!-- HEADER / NAVBAR PROFISSIONAL -->
-    <header class="bg-slate-900/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3.5">
-                <div class="bg-gradient-to-br from-claro-500 to-claro-700 text-white p-3 rounded-2xl shadow-lg shadow-claro-500/20">
-                    <i class="fa-solid fa-square-check text-2xl"></i>
+    <!-- HEADER / NAVBAR COM LOGO, HORA E DATA -->
+    <header class="bg-slate-900/95 backdrop-blur-xl shadow-2xl sticky top-0 z-50 border-b border-red-500/20">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="bg-gradient-to-tr from-claro-600 to-red-500 text-white px-4 py-2.5 rounded-2xl shadow-lg glow-effect flex items-center gap-2.5 border border-red-400/30">
+                    <span class="font-black tracking-tighter text-2xl italic">claro</span>
+                    <span class="bg-white text-claro-600 text-[10px] font-black px-1.5 py-0.5 rounded uppercase">SP</span>
                 </div>
                 <div>
-                    <h1 class="font-black text-xl tracking-wide bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Controle de Qualidade SP</h1>
-                    <p class="text-xs text-claro-500 font-bold uppercase tracking-widest">Claro Brasil • Unidade São Paulo</p>
+                    <h1 class="font-black text-xl lg:text-2xl tracking-tight text-white drop-shadow-md">Controle de Qualidade SP</h1>
+                    <p class="text-xs text-claro-500 font-extrabold uppercase tracking-widest">Gestão de Documentação e Processos</p>
                 </div>
             </div>
 
-            <!-- TÍTULOS / LINKS RÁPIDOS NO TOPO (LADO A LADO) -->
-            <nav class="hidden lg:flex items-center gap-1 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80 shadow-inner">
-                <a href="#inicio" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-house text-claro-500 mr-1.5"></i> Início</a>
-                <a href="#painel-busca" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-magnifying-glass text-claro-500 mr-1.5"></i> Acervo & Busca</a>
-                <a href="#como-usar" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-circle-info text-claro-500 mr-1.5"></i> Orientações</a>
-                <a href="#suporte-tec" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition"><i class="fa-solid fa-headset text-claro-500 mr-1.5"></i> Suporte SP</a>
-            </nav>
+            <!-- DATA E HORA EM TEMPO REAL NO TOPO -->
+            <div class="hidden md:flex items-center gap-3 bg-slate-950/80 px-4 py-2 rounded-2xl border border-slate-800 text-xs text-slate-300 shadow-inner font-bold">
+                <div class="flex items-center gap-1.5 text-claro-500"><i class="fa-regular fa-calendar-days"></i> <span id="current-date">--/--/----</span></div>
+                <span class="text-slate-700">|</span>
+                <div class="flex items-center gap-1.5 text-emerald-400"><i class="fa-regular fa-clock"></i> <span id="current-time">--:--:--</span></div>
+            </div>
 
             <div class="flex items-center space-x-3">
-                <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold items-center gap-2 transition border border-slate-700/60 shadow-sm flex">
-                    <i class="fa-solid fa-gear text-claro-500"></i> Gerenciar
+                <button onclick="openAdminModal()" class="bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold items-center gap-2 transition border border-slate-700 shadow-md flex">
+                    <i class="fa-solid fa-gear text-claro-500"></i> Gerenciar Links
                 </button>
 
                 <div id="auth-container">
-                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-claro-500/30 flex items-center gap-2">
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-5 py-2.5 rounded-xl text-xs font-black tracking-wider uppercase transition shadow-lg glow-effect flex items-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
                     </button>
                 </div>
@@ -60,59 +70,63 @@
         </div>
     </header>
 
-    <!-- BANNER DE DESTAQUE DINÂMICO (COM IMAGEM/GRADIENTE MODERNO) -->
-    <section id="inicio" class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-b border-slate-800/80 py-12 lg:py-16">
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#da291c_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="max-w-7xl mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+    <!-- BANNER DINÂMICO 4K COM FRASE DE INCENTIVO (VIDA, SAÚDE, SEGURANÇA E AMOR) -->
+    <section id="inicio" class="relative overflow-hidden bg-cyber-pattern border-b border-slate-800/80 py-14 lg:py-20">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
             <div class="max-w-2xl">
-                <span class="inline-flex items-center gap-1.5 bg-claro-500/10 text-claro-500 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-4 border border-claro-500/20">
-                    <span class="w-2 h-2 rounded-full bg-claro-500 animate-pulse"></span> Sistema Operacional Ativo
-                </span>
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 text-white leading-tight">
-                    Central Inteligente de <span class="bg-gradient-to-r from-claro-500 to-red-600 bg-clip-text text-transparent">Qualidade e Processos</span>
+                <!-- FRASE DE INCENTIVO DINÂMICA -->
+                <div id="incentive-banner" class="inline-flex items-center gap-2.5 bg-gradient-to-r from-claro-500/20 to-red-600/10 text-red-300 text-xs px-4 py-2 rounded-2xl font-black uppercase tracking-wider mb-6 border border-claro-500/30 backdrop-blur-md shadow-lg">
+                    <i class="fa-solid fa-heart-pulse text-claro-500 animate-pulse"></i> 
+                    <span id="incentive-text">Carregando mensagem de inspiração...</span>
+                </div>
+
+                <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6 text-white leading-tight drop-shadow-xl">
+                    Repositório Digital <span class="bg-gradient-to-r from-claro-500 via-red-500 to-orange-500 bg-clip-text text-transparent">Alta Performance</span>
                 </h2>
-                <p class="text-sm sm:text-base text-slate-400 mb-6 leading-relaxed">
-                    Acesse o acervo completo de 2GB de documentação técnica, relatórios estratégicos e padrões operacionais da Claro SP. Navegue pelas categorias ou utilize o painel restrito para downloads seguros.
+                <p class="text-sm sm:text-base text-slate-300 mb-8 leading-relaxed font-medium">
+                    Centralize e consulte instantaneamente mais de 2GB de relatórios estratégicos, manuais operacionais e pastas completas da Claro SP em um ambiente seguro, moderno e integrado.
                 </p>
-                <div class="flex flex-wrap gap-3">
-                    <a href="#painel-busca" class="bg-claro-500 hover:bg-claro-600 text-white font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-claro-500/25 flex items-center gap-2">
-                        <i class="fa-solid fa-folder-open"></i> Explorar Acervo
+                <div class="flex flex-wrap gap-4">
+                    <a href="#painel-busca" class="bg-claro-500 hover:bg-claro-600 text-white font-black px-7 py-3.5 rounded-2xl text-xs uppercase tracking-widest transition shadow-xl glow-effect flex items-center gap-2.5">
+                        <i class="fa-solid fa-compass"></i> Acessar Documentos
                     </a>
-                    <button onclick="openAdminModal()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-claro-500"></i> Cadastrar Links
+                    <button onclick="openAdminModal()" class="bg-slate-900/90 hover:bg-slate-800 text-white font-black px-7 py-3.5 rounded-2xl text-xs uppercase tracking-widest transition border border-slate-700 backdrop-blur-md flex items-center gap-2.5">
+                        <i class="fa-solid fa-plus-circle text-claro-500"></i> Adicionar Nova Pasta
                     </button>
                 </div>
             </div>
-            <div class="w-full md:w-auto flex justify-center">
-                <div class="relative bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-3xl border border-slate-800 shadow-2xl max-w-sm w-full">
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+            
+            <!-- PAINEL VISUAL 4K -->
+            <div class="w-full md:w-auto">
+                <div class="relative bg-slate-900/90 backdrop-blur-xl p-7 rounded-3xl border border-red-500/30 shadow-2xl glow-effect max-w-sm w-full">
+                    <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
                         <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <div class="w-3.5 h-3.5 rounded-full bg-red-500"></div>
+                            <div class="w-3.5 h-3.5 rounded-full bg-amber-500"></div>
+                            <div class="w-3.5 h-3.5 rounded-full bg-emerald-500"></div>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-mono">claro-sp-v2.0.exe</span>
+                        <span class="text-[11px] text-claro-500 font-mono font-bold">CLARO_SP_SECURE_NODE</span>
                     </div>
-                    <div class="space-y-3">
-                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-claro-500/10 text-claro-500 p-2 rounded-lg"><i class="fa-solid fa-database"></i></div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-3.5">
+                                <div class="bg-claro-500/20 text-claro-500 p-3 rounded-xl"><i class="fa-solid fa-database text-lg"></i></div>
                                 <div>
-                                    <h4 class="text-xs font-bold text-slate-200">Volume Total</h4>
-                                    <p class="text-[10px] text-slate-400">2 GB Indexados</p>
+                                    <h4 class="text-xs font-black text-white">Acervo Indexado</h4>
+                                    <p class="text-[11px] text-slate-400">2.0 GB de Arquivos</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Online</span>
+                            <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg">100% Sync</span>
                         </div>
-                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-claro-500/10 text-claro-500 p-2 rounded-lg"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-3.5">
+                                <div class="bg-claro-500/20 text-claro-500 p-3 rounded-xl"><i class="fa-solid fa-shield-check text-lg"></i></div>
                                 <div>
-                                    <h4 class="text-xs font-bold text-slate-200">Segurança</h4>
-                                    <p class="text-[10px] text-slate-400">Proteção Supabase</p>
+                                    <h4 class="text-xs font-black text-white">Sessão Supabase</h4>
+                                    <p class="text-[11px] text-slate-400">Proteção Ativa</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-bold text-claro-500 bg-claro-500/10 px-2 py-0.5 rounded">Ativo</span>
+                            <span class="text-xs font-black text-claro-500 bg-claro-500/10 px-2.5 py-1 rounded-lg">Online</span>
                         </div>
                     </div>
                 </div>
@@ -120,88 +134,79 @@
         </div>
     </section>
 
-    <!-- CONTEÚDO PRINCIPAL COM LAYOUT DE TRÊS COLUNAS (LATERAIS + CENTRO) -->
-    <main id="painel-busca" class="max-w-7xl mx-auto px-4 py-10 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- CONTEÚDO PRINCIPAL: LAYOUT DE TRÊS COLUNAS VIVAS -->
+    <main id="painel-busca" class="max-w-7xl mx-auto px-6 py-12 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- LATERAL ESQUERDA: ATALHOS E CATEGORIAS FIXAS -->
+        <!-- LATERAL ESQUERDA: NAVEGAÇÃO DE PASTAS -->
         <aside class="lg:col-span-3 space-y-6">
-            <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-xl sticky top-24">
-                <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-compass text-claro-500"></i> Navegação Rápida
+            <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 border border-slate-800 shadow-2xl sticky top-28">
+                <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-tree text-claro-500 text-sm"></i> Categorias & Pastas
                 </h3>
-                <div class="space-y-2" id="category-filters-sidebar">
+                <div class="space-y-2.5" id="category-filters-sidebar">
                     <!-- Gerado dinamicamente -->
                 </div>
 
-                <hr class="border-slate-800 my-5">
-
-                <div class="bg-gradient-to-br from-claro-500/10 to-transparent p-4 rounded-xl border border-claro-500/20">
-                    <h4 class="text-xs font-bold text-white mb-1 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-claro-500"></i> Dica Útil</h4>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">
-                        Faça login no topo da página para liberar o acesso direto aos links do Google Drive com segurança.
+                <div class="mt-8 pt-6 border-t border-slate-800 bg-gradient-to-b from-transparent to-claro-500/5 p-4 rounded-2xl border border-claro-500/20">
+                    <h4 class="text-xs font-black text-white mb-1.5 flex items-center gap-2"><i class="fa-solid fa-lightbulb text-claro-500"></i> Dica de Uso</h4>
+                    <p class="text-[11px] text-slate-300 leading-relaxed font-medium">
+                        Clique em <b>Visualizar no Sistema</b> para abrir qualquer pasta ou documento diretamente em uma janela interna integrada.
                     </p>
                 </div>
             </div>
         </aside>
 
-        <!-- CENTRO: BUSCA E VITRINE DE CARDS -->
+        <!-- CENTRO: BUSCA E LISTA DE CARDS -->
         <section class="lg:col-span-6 space-y-6">
-            <!-- BARRA DE PESQUISA MODERNA -->
-            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <!-- BARRA DE PESQUISA -->
+            <div class="bg-slate-900/90 backdrop-blur-xl p-5 rounded-3xl border border-slate-800 shadow-2xl">
                 <div class="relative w-full">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass text-claro-500"></i>
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-claro-500">
+                        <i class="fa-solid fa-magnifying-glass text-base"></i>
                     </span>
-                    <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Pesquisar relatórios, POPs, manuais ou pastas..." 
-                        class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-800 bg-slate-950 focus:outline-none focus:ring-2 focus:ring-claro-500 text-sm text-slate-100 placeholder-slate-500 shadow-inner">
+                    <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Pesquisar relatórios, manuais ou pastas..." 
+                        class="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-slate-800 bg-slate-950 focus:outline-none focus:ring-2 focus:ring-claro-500 text-sm text-slate-100 placeholder-slate-500 shadow-inner font-medium">
                 </div>
             </div>
 
-            <!-- FILTROS SUPERIORES MÓVEIS -->
-            <div class="flex gap-2 overflow-x-auto pb-1" id="category-filters">
+            <!-- FILTROS SUPERIORES -->
+            <div class="flex gap-2 overflow-x-auto pb-2" id="category-filters">
                 <!-- Preenchido via JS -->
             </div>
 
-            <!-- GRID DE CONTEÚDOS (CARDS) -->
-            <div id="content-grid" class="grid grid-cols-1 gap-5">
+            <!-- GRID DE CONTEÚDOS -->
+            <div id="content-grid" class="grid grid-cols-1 gap-6">
                 <!-- Cards injetados via JS -->
             </div>
         </section>
 
-        <!-- LATERAL DIREITA: ESTATÍSTICAS E SUPORTE -->
+        <!-- LATERAL DIREITA: STATUS E SUPORTE -->
         <aside class="lg:col-span-3 space-y-6">
-            <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-5 sticky top-24">
+            <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-6 sticky top-28">
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-claro-500"></i> Status do Servidor
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-server text-claro-500 text-sm"></i> Indicadores SP
                     </h3>
                     <div class="space-y-3 text-xs">
-                        <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800/80">
-                            <span class="text-slate-400">Repositório:</span>
-                            <span class="font-bold text-white">Vercel Edge</span>
+                        <div class="flex justify-between items-center bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                            <span class="text-slate-400 font-medium">Ambiente:</span>
+                            <span class="font-bold text-white">Produção Vercel</span>
                         </div>
-                        <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800/80">
-                            <span class="text-slate-400">Banco de Dados:</span>
-                            <span class="font-bold text-claro-500">Supabase</span>
+                        <div class="flex justify-between items-center bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                            <span class="text-slate-400 font-medium">Banco:</span>
+                            <span class="font-bold text-claro-500">Supabase Cloud</span>
                         </div>
-                        <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800/80">
-                            <span class="text-slate-400">Armazenamento:</span>
-                            <span class="font-bold text-emerald-400">Google Drive</span>
+                        <div class="flex justify-between items-center bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                            <span class="text-slate-400 font-medium">Repositório:</span>
+                            <span class="font-bold text-emerald-400">Google Drive 2GB</span>
                         </div>
                     </div>
                 </div>
 
-                <div id="como-usar" class="pt-2 border-t border-slate-800">
-                    <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i class="fa-solid fa-circle-question text-claro-500"></i> Como funciona?</h4>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">
-                        Clique em <b>Gerenciar</b> para adicionar novos links do seu Google Drive. O sistema organiza tudo instantaneamente nas categorias.
-                    </p>
-                </div>
-
-                <div id="suporte-tec" class="pt-2 border-t border-slate-800">
-                    <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i class="fa-solid fa-headset text-claro-500"></i> Suporte Técnico</h4>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">
-                        Controle de Qualidade SP • Gestão Interna de Documentação Corporativa.
+                <div class="pt-4 border-t border-slate-800">
+                    <h4 class="text-xs font-black text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-shield-check text-claro-500"></i> Segurança Interna</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-medium">
+                        Todo o tráfego e acesso aos links do acervo são monitorados e restritos a colaboradores autorizados da Claro SP.
                     </p>
                 </div>
             </div>
@@ -209,93 +214,119 @@
 
     </main>
 
-    <!-- MODAL DE LOGIN / CADASTRO DE USUÁRIO -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-7 relative border border-slate-800">
-            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
+    <!-- MODAL DE PRÉ-VISUALIZAÇÃO INTERNA -->
+    <div id="preview-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-2xl z-50 hidden flex flex-col p-4 sm:p-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-6xl mx-auto flex flex-col h-full shadow-2xl overflow-hidden">
+            <div class="bg-slate-950 px-6 py-4 flex justify-between items-center border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="bg-claro-500 text-white p-2 rounded-xl"><i class="fa-solid fa-folder-open"></i></div>
+                    <div>
+                        <h3 id="preview-title" class="font-bold text-sm text-white">Visualizador do Acervo</h3>
+                        <p class="text-[10px] text-slate-400">Google Drive Integrado</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a id="preview-external-link" href="#" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-external-link"></i> Abrir na Aba Nova
+                    </a>
+                    <button onclick="closePreviewModal()" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white p-2 rounded-xl transition">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-grow bg-slate-950 relative">
+                <iframe id="preview-iframe" src="" class="w-full h-full border-0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE LOGIN / CADASTRO -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-8 relative border border-red-500/30">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2.5 rounded-2xl transition">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
             
             <div class="mb-6">
-                <div class="bg-claro-500/10 text-claro-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-3 border border-claro-500/20">
-                    <i class="fa-solid fa-lock text-lg"></i>
+                <div class="bg-gradient-to-tr from-claro-600 to-red-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-lg glow-effect">
+                    <i class="fa-solid fa-lock text-xl"></i>
                 </div>
-                <h3 id="auth-modal-title" class="text-xl font-black text-white">Acesse sua Conta</h3>
-                <p class="text-xs text-slate-400 mt-1">Faça login ou cadastre-se para liberar o acesso aos arquivos do Google Drive.</p>
+                <h3 id="auth-modal-title" class="text-2xl font-black text-white">Acesse sua Conta</h3>
+                <p class="text-xs text-slate-400 mt-1 font-medium">Faça login ou cadastre-se para liberar o acesso ao acervo.</p>
             </div>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">E-mail Corporativo</label>
-                    <input type="email" id="auth-email" required placeholder="seu.email@claro.com.br" class="w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-sm text-slate-100 focus:ring-2 focus:ring-claro-500 focus:outline-none">
+                    <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">E-mail Corporativo</label>
+                    <input type="email" id="auth-email" required placeholder="seu.email@claro.com.br" class="w-full px-4 py-3.5 rounded-2xl border border-slate-800 bg-slate-950 text-sm text-slate-100 focus:ring-2 focus:ring-claro-500 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Senha</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-sm text-slate-100 focus:ring-2 focus:ring-claro-500 focus:outline-none">
+                    <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Senha</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-4 py-3.5 rounded-2xl border border-slate-800 bg-slate-950 text-sm text-slate-100 focus:ring-2 focus:ring-claro-500 focus:outline-none font-medium">
                 </div>
-                <button type="submit" id="auth-submit-btn" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-claro-500/25 transition">Entrar no Sistema</button>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-widest shadow-xl glow-effect transition">Entrar no Sistema</button>
             </form>
 
-            <div class="mt-5 text-center">
-                <button onclick="toggleAuthMode()" id="auth-toggle-text" class="text-xs text-claro-500 hover:text-red-400 font-semibold transition">Não tem uma conta? Cadastre-se</button>
+            <div class="mt-6 text-center">
+                <button onclick="toggleAuthMode()" id="auth-toggle-text" class="text-xs text-claro-500 hover:text-red-400 font-bold transition">Não tem uma conta? Cadastre-se</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE GERENCIAMENTO (ADICIONAR ITENS) -->
-    <div id="admin-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-2xl w-full p-7 relative border border-slate-800 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
+    <!-- MODAL DE GERENCIAMENTO -->
+    <div id="admin-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative border border-slate-800 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2.5 rounded-2xl transition">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
             
             <div class="mb-6">
-                <div class="bg-claro-500/10 text-claro-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-3 border border-claro-500/20">
-                    <i class="fa-solid fa-folder-tree text-lg"></i>
+                <div class="bg-gradient-to-tr from-claro-600 to-red-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-lg glow-effect">
+                    <i class="fa-solid fa-folder-tree text-xl"></i>
                 </div>
-                <h3 class="text-xl font-black text-white">Painel de Gerenciamento</h3>
-                <p class="text-xs text-slate-400 mt-1">Cadastre novos arquivos ou pastas do seu Google Drive para alimentar o painel.</p>
+                <h3 class="text-2xl font-black text-white">Painel de Gerenciamento</h3>
+                <p class="text-xs text-slate-400 mt-1 font-medium">Cadastre novos arquivos ou pastas do seu Google Drive.</p>
             </div>
 
-            <form onsubmit="addNewItem(event)" class="space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800/80 mb-6">
+            <form onsubmit="addNewItem(event)" class="space-y-4 bg-slate-950 p-6 rounded-3xl border border-slate-800 mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Título do Arquivo / Pasta</label>
-                        <input type="text" id="new-title" required placeholder="Ex: Relatório Qualidade SP" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
+                        <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Título</label>
+                        <input type="text" id="new-title" required placeholder="Ex: Relatório Qualidade SP" class="w-full px-4 py-3 rounded-2xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500 font-medium">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Categoria / Seção</label>
-                        <input type="text" id="new-category" required placeholder="Ex: Relatórios, Processos" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
+                        <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Categoria</label>
+                        <input type="text" id="new-category" required placeholder="Ex: Relatórios, Manuais" class="w-full px-4 py-3 rounded-2xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500 font-medium">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Link do Google Drive</label>
-                    <input type="url" id="new-link" required placeholder="https://drive.google.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
+                    <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Link do Google Drive</label>
+                    <input type="url" id="new-link" required placeholder="https://drive.google.com/..." class="w-full px-4 py-3 rounded-2xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500 font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">Descrição Curta</label>
-                    <input type="text" id="new-desc" placeholder="Detalhes rápidos sobre o conteúdo..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500">
+                    <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Descrição</label>
+                    <input type="text" id="new-desc" placeholder="Detalhes rápidos..." class="w-full px-4 py-3 rounded-2xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500 font-medium">
                 </div>
-                <button type="submit" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-claro-500/25 transition">
-                    Adicionar ao Painel Dinâmico
+                <button type="submit" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-widest shadow-xl glow-effect transition">
+                    Adicionar ao Acervo
                 </button>
             </form>
 
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Itens Cadastrados Atualmente</h4>
-            <div id="admin-items-list" class="space-y-2 max-h-48 overflow-y-auto pr-2"></div>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Itens Cadastrados</h4>
+            <div id="admin-items-list" class="space-y-2.5 max-h-48 overflow-y-auto pr-2"></div>
         </div>
     </div>
 
     <!-- FOOTER CORPORATIVO -->
-    <footer class="bg-slate-900 border-t border-slate-800 py-8 text-center text-xs text-slate-500 mt-12">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p>&copy; 2026 Controle de Qualidade SP - Claro Brasil. Todos os direitos reservados.</p>
-            <div class="flex items-center gap-4 text-slate-400">
-                <span class="hover:text-white transition cursor-pointer">Termos de Uso</span>
+    <footer class="bg-slate-900 border-t border-slate-800 py-10 text-center text-xs text-slate-400 mt-16">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="font-medium">&copy; 2026 Controle de Qualidade SP - Claro Brasil. Todos os direitos reservados.</p>
+            <div class="flex items-center gap-6 font-medium text-slate-300">
+                <span class="hover:text-white transition cursor-pointer">Termos Corporativos</span>
                 <span>•</span>
-                <span class="hover:text-white transition cursor-pointer">Segurança da Informação</span>
+                <span class="hover:text-white transition cursor-pointer">Compliance</span>
                 <span>•</span>
-                <span class="hover:text-white transition cursor-pointer">Suporte Interno</span>
+                <span class="hover:text-white transition cursor-pointer">Suporte SP</span>
             </div>
         </div>
     </footer>
@@ -322,7 +353,24 @@
 
         let items = JSON.parse(localStorage.getItem('claro_qualidade_items')) || defaultItems;
 
+        // Frases de Incentivo (Vida, Saúde, Segurança e Amor)
+        const incentiveQuotes = [
+            "A saúde é o nosso maior bem; cuide dela com amor e dedicação todos os dias.",
+            "Trabalhe com segurança: a sua vida e o bem-estar de quem você ama vêm em primeiro lugar.",
+            "O amor à família e à vida é o motor que nos impulsiona a vencer cada desafio.",
+            "Cuidar da mente e do corpo é garantir um futuro repleto de paz, conquistas e alegria.",
+            "A segurança no presente constrói a tranquilidade e a felicidade do amanhã."
+        ];
+
         window.addEventListener('DOMContentLoaded', async () => {
+            // Relógio e Data em tempo real
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Frase aleatória de incentivo
+            const randomQuote = incentiveQuotes[Math.floor(Math.random() * incentiveQuotes.length)];
+            document.getElementById('incentive-text').textContent = randomQuote;
+
             if (supabaseClient) {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session?.user) {
@@ -334,41 +382,65 @@
             renderCategories();
         });
 
+        function updateDateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR');
+            const timeStr = now.toLocaleTimeString('pt-BR');
+            const dateEl = document.getElementById('current-date');
+            const timeEl = document.getElementById('current-time');
+            if(dateEl) dateEl.textContent = dateStr;
+            if(timeEl) timeEl.textContent = timeStr;
+        }
+
         function renderContent(data) {
             const grid = document.getElementById('content-grid');
             grid.innerHTML = '';
 
             if (data.length === 0) {
-                grid.innerHTML = `<div class="text-center py-12 text-slate-500 bg-slate-900/50 rounded-2xl border border-slate-800">Nenhum arquivo cadastrado no momento.</div>`;
+                grid.innerHTML = `<div class="text-center py-12 text-slate-400 bg-slate-900/60 rounded-3xl border border-slate-800 font-bold">Nenhum arquivo cadastrado.</div>`;
                 return;
             }
 
             data.forEach(item => {
                 grid.innerHTML += `
-                    <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-5 shadow-xl hover:border-claro-500/50 transition duration-300 flex flex-col justify-between group">
+                    <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 shadow-2xl hover:border-claro-500/60 transition duration-300 flex flex-col justify-between group">
                         <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="bg-claro-500/10 text-claro-500 text-[11px] px-3 py-1 rounded-full font-extrabold border border-claro-500/20">${item.category}</span>
-                                <span class="text-[10px] text-slate-500 font-mono"><i class="fa-regular fa-calendar mr-1"></i>${item.date || ''}</span>
+                            <div class="flex justify-between items-start mb-3.5">
+                                <span class="bg-claro-500/15 text-claro-500 text-xs px-3.5 py-1 rounded-full font-black border border-claro-500/30">${item.category}</span>
+                                <span class="text-[11px] text-slate-400 font-mono font-bold"><i class="fa-regular fa-calendar mr-1.5"></i>${item.date || ''}</span>
                             </div>
-                            <h3 class="font-bold text-base mb-1.5 text-white group-hover:text-claro-500 transition">${item.title}</h3>
-                            <p class="text-xs text-slate-400 mb-5 leading-relaxed">${item.description || 'Sem descrição informada.'}</p>
+                            <h3 class="font-black text-lg sm:text-xl mb-2 text-white group-hover:text-claro-500 transition tracking-tight">${item.title}</h3>
+                            <p class="text-sm text-slate-300 mb-6 leading-relaxed font-medium">${item.description || 'Sem descrição informada.'}</p>
                         </div>
-                        <button onclick="handleDownload('${item.link}')" class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md shadow-claro-500/20">
-                            <i class="fa-solid fa-cloud-arrow-down"></i> Acessar / Baixar (Protegido)
+                        <button onclick="handlePreview('${item.title}', '${item.link}')" class="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-black py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg glow-effect">
+                            <i class="fa-solid fa-eye text-sm"></i> Visualizar no Sistema (Protegido)
                         </button>
                     </div>
                 `;
             });
         }
 
-        function handleDownload(link) {
-            if (currentUser) {
-                window.open(link, '_blank');
-            } else {
-                alert('Atenção: Para acessar os arquivos do Google Drive, é necessário realizar o cadastro ou login na plataforma!');
+        function handlePreview(title, link) {
+            if (!currentUser) {
+                alert('Atenção: Para visualizar os arquivos e pastas do acervo, é necessário realizar o login na plataforma!');
                 openAuthModal();
+                return;
             }
+
+            let embedLink = link;
+            if (link.includes('drive.google.com')) {
+                embedLink = link.replace('/view?usp=sharing', '/preview').replace('/edit?usp=sharing', '/preview');
+            }
+
+            document.getElementById('preview-title').textContent = title;
+            document.getElementById('preview-iframe').src = embedLink;
+            document.getElementById('preview-external-link').href = link;
+            document.getElementById('preview-modal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('preview-iframe').src = '';
         }
 
         function renderCategories() {
@@ -382,16 +454,14 @@
             categories.forEach((cat, index) => {
                 const isActive = index === 0;
                 
-                // Filtros superiores
                 container.innerHTML += `
-                    <button onclick="filterCategory('${cat}', this)" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold ${isActive ? 'bg-claro-500 text-white shadow-lg shadow-claro-500/25' : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'} whitespace-nowrap transition">${cat}</button>
+                    <button onclick="filterCategory('${cat}', this)" class="cat-btn px-4.5 py-2 rounded-2xl text-xs font-black ${isActive ? 'bg-claro-500 text-white shadow-lg glow-effect' : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'} whitespace-nowrap transition">${cat}</button>
                 `;
 
-                // Sidebar lateral esquerda
                 sidebarContainer.innerHTML += `
-                    <button onclick="filterCategory('${cat}', this)" class="cat-btn-side w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${isActive ? 'bg-claro-500/10 text-claro-500 border border-claro-500/30 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white'} transition flex items-center justify-between">
-                        <span><i class="fa-solid fa-folder text-claro-500 mr-2 text-[10px]"></i> ${cat}</span>
-                        <i class="fa-solid fa-chevron-right text-[9px] opacity-60"></i>
+                    <button onclick="filterCategory('${cat}', this)" class="cat-btn-side w-full text-left px-4 py-3 rounded-2xl text-xs font-bold ${isActive ? 'bg-claro-500/20 text-claro-500 border border-claro-500/40 font-black' : 'text-slate-400 hover:bg-slate-800 hover:text-white'} transition flex items-center justify-between">
+                        <span><i class="fa-solid fa-folder text-claro-500 mr-2.5 text-xs"></i> ${cat}</span>
+                        <i class="fa-solid fa-chevron-right text-[10px] opacity-60"></i>
                     </button>
                 `;
             });
@@ -400,16 +470,16 @@
         function filterCategory(category, btnElement) {
             document.querySelectorAll('.cat-btn, .cat-btn-side').forEach(btn => {
                 if(btn.classList.contains('cat-btn')) {
-                    btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 whitespace-nowrap transition';
+                    btn.className = 'cat-btn px-4.5 py-2 rounded-2xl text-xs font-black bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 whitespace-nowrap transition';
                 } else {
-                    btn.className = 'cat-btn-side w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white transition flex items-center justify-between';
+                    btn.className = 'cat-btn-side w-full text-left px-4 py-3 rounded-2xl text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition flex items-center justify-between';
                 }
             });
 
             if(btnElement.classList.contains('cat-btn')) {
-                btnElement.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-claro-500 text-white shadow-lg shadow-claro-500/25 whitespace-nowrap transition';
+                btnElement.className = 'cat-btn px-4.5 py-2 rounded-2xl text-xs font-black bg-claro-500 text-white shadow-lg glow-effect whitespace-nowrap transition';
             } else {
-                btnElement.className = 'cat-btn-side w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-claro-500/10 text-claro-500 border border-claro-500/30 font-bold transition flex items-center justify-between';
+                btnElement.className = 'cat-btn-side w-full text-left px-4 py-3 rounded-2xl text-xs font-bold bg-claro-500/20 text-claro-500 border border-claro-500/40 font-black transition flex items-center justify-between';
             }
 
             if (category === 'Todos') {
@@ -473,15 +543,15 @@
             if (currentUser) {
                 container.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <span class="text-xs font-semibold hidden sm:inline text-slate-400">${currentUser.email}</span>
-                        <button onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-3.5 py-2 rounded-xl text-xs font-bold transition border border-red-500/20 flex items-center gap-1.5">
+                        <span class="text-xs font-bold hidden sm:inline text-slate-300">${currentUser.email}</span>
+                        <button onclick="logout()" class="bg-red-500/15 hover:bg-red-500/25 text-red-400 px-4 py-2.5 rounded-2xl text-xs font-black transition border border-red-500/30 flex items-center gap-2">
                             <i class="fa-solid fa-right-from-bracket"></i> Sair
                         </button>
                     </div>
                 `;
             } else {
                 container.innerHTML = `
-                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-claro-500/30 flex items-center gap-2">
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-5 py-2.5 rounded-2xl text-xs font-black tracking-wider uppercase transition shadow-lg glow-effect flex items-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
                     </button>
                 `;
@@ -521,17 +591,17 @@
             const listContainer = document.getElementById('admin-items-list');
             listContainer.innerHTML = '';
             if (items.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-slate-500">Nenhum item.</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-slate-400 font-bold">Nenhum item.</p>`;
                 return;
             }
             items.forEach(item => {
                 listContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs">
+                    <div class="flex justify-between items-center bg-slate-900 p-3.5 rounded-2xl border border-slate-800 text-xs">
                         <div>
-                            <span class="font-bold text-white">${item.title}</span>
-                            <span class="ml-2 text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">${item.category}</span>
+                            <span class="font-black text-white">${item.title}</span>
+                            <span class="ml-2 text-[10px] bg-slate-800 px-2.5 py-0.5 rounded-full font-bold text-slate-300">${item.category}</span>
                         </div>
-                        <button onclick="deleteItem(${item.id})" class="text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="deleteItem(${item.id})" class="text-red-400 hover:text-white bg-red-500/20 hover:bg-red-600 p-2 rounded-xl transition"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
@@ -548,8 +618,6 @@
             document.getElementById('auth-submit-btn').textContent = isSignUpMode ? 'Cadastrar e Liberar Acessos' : 'Entrar no Sistema';
             document.getElementById('auth-toggle-text').textContent = isSignUpMode ? 'Já tem uma conta? Faça login' : 'Não tem uma conta? Cadastre-se';
         }
-
-        function toggleDarkMode() {}
     </script>
 </body>
 </html>
