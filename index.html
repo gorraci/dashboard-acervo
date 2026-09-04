@@ -93,7 +93,7 @@
             </button>
             
             <h3 id="auth-modal-title" class="text-xl font-bold mb-1">Acesse sua Conta</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Faça login ou cadastre-se para liberar o download dos arquivos do OneDrive.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Faça login ou cadastre-se para liberar o download dos arquivos.</p>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
@@ -121,7 +121,7 @@
             </button>
             
             <h3 class="text-xl font-bold mb-1">Painel de Gerenciamento de Arquivos</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Cadastre novos arquivos que estão subindo no seu OneDrive.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Cadastre novos arquivos do Google Drive ou OneDrive.</p>
 
             <form onsubmit="addNewItem(event)" class="space-y-4 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -135,8 +135,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Link do OneDrive</label>
-                    <input type="url" id="new-link" required placeholder="https://onedrive.live.com/..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Link do Drive</label>
+                    <input type="url" id="new-link" required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Descrição</label>
@@ -159,23 +159,23 @@
 
     <!-- SCRIPT DA APLICAÇÃO -->
     <script>
-        // CONFIGURAÇÃO DO SUPABASE (Opcional: insira suas chaves caso queira autenticação real na nuvem)
-        const SUPABASE_URL = 'https://ydolovarfsfamgbvcvee.supabase.co/'; 
+        // CONFIGURAÇÃO DO SUPABASE (Corrigida com aspas)
+        const SUPABASE_URL = 'https://ydolovarfsfamgbvcvee.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_UlhHB_H6FOfGJL2d-mOt8Q_XCizbbJT';
         let supabaseClient = null;
         
         try {
-            if (sb_publishable_UlhHB_H6FOfGJL2d-mOt8Q_XCizbbJT && https://ydolovarfsfamgbvcvee.supabase.co/) {
-                supabaseClient = supabase.createClient(sb_publishable_UlhHB_H6FOfGJL2d-mOt8Q_XCizbbJT, https://ydolovarfsfamgbvcvee.supabase.co/);
+            if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
-        } catch(e) { console.log("Modo local ativo"); }
+        } catch(e) { console.log("Modo local ativo", e); }
 
         let currentUser = JSON.parse(localStorage.getItem('claro_current_user')) || null;
         let isSignUpMode = false;
 
         const defaultItems = [
-            { id: 1, title: 'Procedimento Operacional Padrão (POP)', category: 'Manuais', description: 'Diretrizes de qualidade para atendimento e processos SP.', link: 'https://onedrive.live.com', date: '03/09/2026' },
-            { id: 2, title: 'Planilha de Auditoria e Métricas', category: 'Relatórios', description: 'Acompanhamento diário de indicadores de qualidade.', link: 'https://onedrive.live.com', date: '03/09/2026' }
+            { id: 1, title: 'Procedimento Operacional Padrão (POP)', category: 'Manuais', description: 'Diretrizes de qualidade para atendimento e processos SP.', link: 'https://drive.google.com', date: '03/09/2026' },
+            { id: 2, title: 'Planilha de Auditoria e Métricas', category: 'Relatórios', description: 'Acompanhamento diário de indicadores de qualidade.', link: 'https://drive.google.com', date: '03/09/2026' }
         ];
 
         let items = JSON.parse(localStorage.getItem('claro_qualidade_items')) || defaultItems;
@@ -213,7 +213,7 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${item.description || 'Sem descrição.'}</p>
                         </div>
                         <button onclick="handleDownload('${item.link}')" class="w-full flex items-center justify-center gap-2 bg-claro-500 hover:bg-claro-600 text-white font-medium py-2 rounded-xl text-xs transition shadow-sm">
-                            <i class="fa-solid fa-download"></i> Baixar Arquivo (Protegido)
+                            <i class="fa-solid fa-download"></i> Acessar / Baixar (Protegido)
                         </button>
                     </div>
                 `;
@@ -225,7 +225,7 @@
             if (currentUser) {
                 window.open(link, '_blank');
             } else {
-                alert('Atenção: Para baixar ou acessar os arquivos do OneDrive, é necessário realizar o cadastro ou login na plataforma!');
+                alert('Atenção: Para acessar os arquivos, é necessário realizar o cadastro ou login na plataforma!');
                 openAuthModal();
             }
         }
@@ -262,7 +262,7 @@
             renderContent(filtered);
         }
 
-        // Gerenciamento de Usuários (Login / Cadastro Local ou Supabase)
+        // Gerenciamento de Usuários (Login / Cadastro)
         async function handleAuthSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
@@ -287,7 +287,6 @@
                 }
             }
 
-            // Modo local simulado funcional caso não use chaves do Supabase
             currentUser = { email };
             localStorage.setItem('claro_current_user', JSON.stringify(currentUser));
             updateAuthUI();
