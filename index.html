@@ -1,1 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acervo Digital - Dashboard Seguro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#eff6ff',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8',
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300"
+  >
+    <!-- HEADER / NAVBAR -->
+    <header
+      class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-40 border-b border-slate-200 dark:border-slate-700"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-3">
+          <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md">
+            <i class="fa-solid fa-folder-open text-xl"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">Meu Acervo 2GB</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Conteúdos & OneDrive
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <!-- Botão Dark Mode -->
+          <button
+            onclick="toggleDarkMode()"
+            class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition"
+          >
+            <i id="theme-icon" class="fa-solid fa-moon"></i>
+          </button>
+
+          <!-- Área do Usuário -->
+          <div id="auth-container">
+            <button
+              onclick="openModal('login')"
+              class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition"
+            >
+              <i class="fa-solid fa-right-to-bracket mr-2"></i> Entrar /
+              Cadastrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+      <!-- BARRA DE PESQUISA E FILTROS -->
+      <div
+        class="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center"
+      >
+        <div class="relative w-full md:w-96">
+          <span
+            class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+          >
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <input
+            type="text"
+            id="search-input"
+            onkeyup="filterContent()"
+            placeholder="Pesquisar arquivos, categorias..."
+            class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+          />
+        </div>
+
+        <!-- Filtros por Categoria -->
+        <div
+          class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0"
+          id="category-filters"
+        >
+          <button
+            onclick="filterCategory('all')"
+            class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-brand-600 text-white shadow-sm whitespace-nowrap transition"
+          >
+            Todos
+          </button>
+        </div>
+      </div>
+
+      <!-- GRID DE CONTEÚDOS -->
+      <div
+        id="content-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <!-- Os cards serão injetados dinamicamente via JavaScript -->
+      </div>
+    </main>
+
+    <!-- MODAL DE LOGIN / CADASTRO -->
+    <div
+      id="auth-modal"
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-slate-200 dark:border-slate-700"
+      >
+        <button
+          onclick="closeModal()"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        >
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+
+        <h3 id="modal-title" class="text-xl font-bold mb-2">
+          Acesse sua Conta
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
+          Faça login para liberar o download direto dos arquivos do OneDrive.
+        </p>
+
+        <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500 dark:text-slate-400"
+              >E-mail</label
+            >
+            <input
+              type="email5"
+              id="auth-email"
+              required
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500 dark:text-slate-400"
+              >Senha</label
+            >
+            <input
+              type="password"
+              id="auth-password"
+              required
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+          <button
+            type="submit"
+            id="auth-submit-btn"
+            class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm shadow transition"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <div class="mt-4 text-center">
+          <button
+            onclick="toggleAuthMode()"
+            id="auth-toggle-text"
+            class="text-xs text-brand-500 hover:underline"
+          >
+            Não tem uma conta? Cadastre-se
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer
+      class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-6 text-center text-xs text-slate-500 dark:text-slate-400"
+    >
+      <p>
+        &copy; 2026 Dashboard Acervo Digital. Hospedado na Vercel com Banco de
+        Dados Supabase.
+      </p>
+    </footer>
+
+    <!-- SCRIPT DE LÓGICA E SUPABASE -->
+    <script>
+      // ==========================================
+      // CONFIGURAÇÃO DO SUPABASE (Substitua pelas suas chaves)
+      // ==========================================
+      const SUPABASE_URL = 'https://ydolovarfsfamgbvcvee.supabase.co';
+      const SUPABASE_ANON_KEY =
+        ' sb_publishable_UlhHB_H6FOfGJL2d-mOt8Q_XCizbbJT';
+
+      let supabaseClient = null;
+      try {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } catch (e) {
+        console.warn(
+          'Supabase não configurado corretamente. Rodando em modo demonstração local.',
+        );
+      }
+
+      let currentUser = null;
+      let isSignUpMode = false;
+
+      // Base de dados simulada caso o Supabase não esteja configurado ainda
+      const mockItems = [
+        {
+          id: 1,
+          title: 'Curso Completo de Python Avançado',
+          category: 'Programação',
+          description:
+            'Mais de 15GB de códigos fonte e videoaulas organizadas em módulos.',
+          onedrive_link: 'https://onedrive.live.com',
+          image:
+            'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=80',
+        },
+        {
+          id: 2,
+          title: 'Pacote de E-books de Direito Administrativo',
+          category: 'Concursos',
+          description:
+            'Materiais focados para editais abertos e revisão geral.',
+          onedrive_link: 'https://onedrive.live.com',
+          image:
+            'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&q=80',
+        },
+        {
+          id: 3,
+          title: 'Templates Profissionais em Excel & Dashboards',
+          category: 'Produtividade',
+          description:
+            'Planilhas prontas para automação de relatórios financeiros e controle.',
+          onedrive_link: 'https://onedrive.live.com',
+          image:
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80',
+        },
+      ];
+
+      let allItems = [...mockItems];
+
+      // Inicialização da Aplicação
+      window.addEventListener('DOMContentLoaded', async () => {
+        if (supabaseClient) {
+          const {
+            data: { session },
+          } = await supabaseClient.auth.getSession();
+          updateAuthUI(session?.user || null);
+
+          supabaseClient.auth.onAuthStateChange((event, session) => {
+            updateAuthUI(session?.user || null);
+          });
+
+          await fetchItemsFromSupabase();
+        }
+        renderContent(allItems);
+        renderCategories();
+      });
+
+      // Buscar itens do Supabase (Tabela: "acervo_itens")
+      async function fetchItemsFromSupabase() {
+        try {
+          const { data, error } = await supabaseClient
+            .from('acervo_itens')
+            .select('*');
+          if (data && data.length > 0) {
+            allItems = data;
+            renderContent(allItems);
+            renderCategories();
+          }
+        } catch (err) {
+          console.log('Usando dados locais de exemplo.');
+        }
+      }
+
+      // Renderizar Cards de Conteúdo
+      function renderContent(items) {
+        const grid = document.getElementById('content-grid');
+        grid.innerHTML = '';
+
+        if (items.length === 0) {
+          grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Nenhum conteúdo encontrado.</div>`;
+          return;
+        }
+
+        items.forEach((item) => {
+          grid.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="h-40 overflow-hidden relative bg-slate-100 dark:bg-slate-700">
+                                <img src="${item.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80'}" alt="${item.title}" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-brand-600 text-white text-xs px-2.5 py-1 rounded-full font-medium shadow">${item.category}</span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-base mb-2">${item.title}</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${item.description}</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="handleDownload('${item.onedrive_link}')" class="w-full flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-700 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-medium py-2.5 rounded-xl text-sm transition">
+                                <i class="fa-solid fa-download"></i> Baixar Conteúdo
+                            </button>
+                        </div>
+                    </div>
+                `;
+        });
+      }
+
+      // Renderizar Filtros de Categoria
+      function renderCategories() {
+        const categoriesContainer = document.getElementById('category-filters');
+        const categories = [
+          'Todos',
+          ...new Set(allItems.map((i) => i.category)),
+        ];
+
+        categoriesContainer.innerHTML = '';
+        categories.forEach((cat, index) => {
+          const isActive = index === 0;
+          categoriesContainer.innerHTML += `
+                    <button onclick="filterCategory('${cat}')" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium ${isActive ? 'bg-brand-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'} whitespace-nowrap transition">${cat}</button>
+                `;
+        });
+      }
+
+      // Filtrar por Categoria
+      function filterCategory(category) {
+        document.querySelectorAll('.cat-btn').forEach((btn) => {
+          btn.className =
+            'cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 whitespace-nowrap transition';
+          if (
+            btn.textContent.trim() === category ||
+            (category === 'all' && btn.textContent.trim() === 'Todos')
+          ) {
+            btn.className =
+              'cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-brand-600 text-white shadow-sm whitespace-nowrap transition';
+          }
+        });
+
+        if (category === 'all') {
+          renderContent(allItems);
+        } else {
+          renderContent(allItems.filter((i) => i.category === category));
+        }
+      }
+
+      // Pesquisa em tempo real
+      function filterContent() {
+        const query = document
+          .getElementById('search-input')
+          .value.toLowerCase();
+        const filtered = allItems.filter(
+          (i) =>
+            i.title.toLowerCase().includes(query) ||
+            i.description.toLowerCase().includes(query) ||
+            i.category.toLowerCase().includes(query),
+        );
+        renderContent(filtered);
+      }
+
+      // Lógica de Proteção de Download
+      function handleDownload(link) {
+        if (currentUser || !supabaseClient) {
+          // Se estiver logado (ou se estiver testando localmente sem supabase configurado)
+          window.open(link, '_blank');
+        } else {
+          // Se não estiver logado, obriga a abrir o modal de cadastro/login
+          alert(
+            'Para baixar os arquivos e acessar os links do OneDrive, é necessário entrar na sua conta ou criar uma gratuitamente!',
+          );
+          openModal('login');
+        }
+      }
+
+      // Gerenciamento de Autenticação Supabase
+      async function handleAuth(event) {
+        event.preventDefault();
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+
+        if (!supabaseClient) {
+          alert(
+            'Simulação de login bem-sucedida! (Configure o Supabase para persistência real).',
+          );
+          currentUser = { email };
+          updateAuthUI(currentUser);
+          closeModal();
+          return;
+        }
+
+        try {
+          if (isSignUpMode) {
+            const { data, error } = await supabaseClient.auth.signUp({
+              email,
+              password,
+            });
+            if (error) throw error;
+            alert(
+              'Conta criada com sucesso! Verifique seu e-mail se necessário ou faça login.',
+            );
+          } else {
+            const { data, error } =
+              await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            alert('Login realizado com sucesso!');
+            closeModal();
+          }
+        } catch (err) {
+          alert('Erro na autenticação: ' + err.message);
+        }
+      }
+
+      async function logout() {
+        if (supabaseClient) await supabaseClient.auth.signOut();
+        currentUser = null;
+        updateAuthUI(null);
+      }
+
+      function updateAuthUI(user) {
+        currentUser = user;
+        const container = document.getElementById('auth-container');
+        if (user) {
+          container.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-medium hidden sm:inline text-slate-500 dark:text-slate-400">${user.email}</span>
+                        <button onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sair
+                        </button>
+                    </div>
+                `;
+        } else {
+          container.innerHTML = `
+                    <button onclick="openModal('login')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition">
+                        <i class="fa-solid fa-right-to-bracket mr-2"></i> Entrar / Cadastrar
+                    </button>
+                `;
+        }
+      }
+
+      // Modais e UI Helpers
+      function openModal(mode) {
+        document.getElementById('auth-modal').classList.remove('hidden');
+      }
+      function closeModal() {
+        document.getElementById('auth-modal').classList.add('hidden');
+      }
+      function toggleAuthMode() {
+        isSignUpMode = !isSignUpMode;
+        document.getElementById('modal-title').textContent = isSignUpMode
+          ? 'Criar Nova Conta'
+          : 'Acesse sua Conta';
+        document.getElementById('auth-submit-btn').textContent = isSignUpMode
+          ? 'Cadastrar'
+          : 'Entrar';
+        document.getElementById('auth-toggle-text').textContent = isSignUpMode
+          ? 'Já tem uma conta? Faça login'
+          : 'Não tem uma conta? Cadastre-se';
+      }
+      function toggleDarkMode() {
+        const html = document.documentElement;
+        const icon = document.getElementById('theme-icon');
+        if (html.classList.contains('dark')) {
+          html.classList.remove('dark');
+          icon.className = 'fa-solid fa-sun';
+        } else {
+          html.classList.add('dark');
+          icon.className = 'fa-solid fa-moon';
+        }
+      }
+    </script>
+  </body>
+</html>
 
