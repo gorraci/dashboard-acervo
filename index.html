@@ -1,10 +1,9 @@
-
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Qualidade SP - Claro</title>
+    <title>Controle de Qualidade SP - Claro Brasil</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,12 +18,14 @@
             }
         }
     </script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- HEADER / NAVBAR (Com identidade Claro SP) -->
+    <!-- HEADER / NAVBAR -->
     <header class="bg-white dark:bg-slate-900 shadow-md sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -43,10 +44,17 @@
                     <i id="theme-icon" class="fa-solid fa-sun"></i>
                 </button>
 
-                <!-- Botão Painel Admin -->
-                <button onclick="openAdminModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-plus-circle"></i> Adicionar / Gerenciar
+                <!-- Botão Adicionar/Gerenciar -->
+                <button onclick="openAdminModal()" class="hidden md:flex bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-2 rounded-lg text-xs font-medium items-center gap-2 transition">
+                    <i class="fa-solid fa-gear"></i> Gerenciar Itens
                 </button>
+
+                <!-- Área de Autenticação (Login / Cadastro) -->
+                <div id="auth-container">
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -77,61 +85,94 @@
 
     </main>
 
-    <!-- MODAL DE ADMINISTRAÇÃO / CADASTRO -->
+    <!-- MODAL DE LOGIN / CADASTRO DE USUÁRIO -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-slate-200 dark:border-slate-800">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <h3 id="auth-modal-title" class="text-xl font-bold mb-1">Acesse sua Conta</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Faça login ou cadastre-se para liberar o download dos arquivos do OneDrive.</p>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">E-mail</label>
+                    <input type="email" id="auth-email" required placeholder="seu.email@claro.com.br" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:ring-2 focus:ring-claro-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Senha</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:ring-2 focus:ring-claro-500">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-medium py-2.5 rounded-lg text-sm shadow transition">Entrar</button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <button onclick="toggleAuthMode()" id="auth-toggle-text" class="text-xs text-claro-500 hover:underline font-medium">Não tem uma conta? Cadastre-se</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE GERENCIAMENTO (ADICIONAR ITENS) -->
     <div id="admin-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full p-6 relative border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
             <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             
-            <h3 class="text-xl font-bold mb-1">Painel de Controle de Qualidade</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Cadastre novos arquivos ou links do OneDrive para alimentar o sistema.</p>
+            <h3 class="text-xl font-bold mb-1">Painel de Gerenciamento de Arquivos</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Cadastre novos arquivos que estão subindo no seu OneDrive.</p>
 
-            <!-- Formulário para Adicionar Novo Item -->
             <form onsubmit="addNewItem(event)" class="space-y-4 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
-                <h4 class="font-semibold text-sm text-claro-500"><i class="fa-solid fa-file-arrow-up mr-1"></i> Novo Arquivo / Processo</h4>
-                
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Título</label>
-                        <input type="text" id="new-title" required placeholder="Ex: Indicadores SP - Março" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Título do Arquivo</label>
+                        <input type="text" id="new-title" required placeholder="Ex: Relatório Qualidade SP" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Categoria (Pasta)</label>
-                        <input type="text" id="new-category" required placeholder="Ex: Auditorias, Relatórios, Processos" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
+                        <input type="text" id="new-category" required placeholder="Ex: Relatórios, Processos" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
                     </div>
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Link do OneDrive / Destino</label>
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Link do OneDrive</label>
                     <input type="url" id="new-link" required placeholder="https://onedrive.live.com/..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-slate-500">Descrição</label>
                     <input type="text" id="new-desc" placeholder="Detalhes rápidos..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm">
                 </div>
-
                 <button type="submit" class="w-full bg-claro-500 hover:bg-claro-600 text-white font-medium py-2 rounded-lg text-sm shadow transition">
-                    Salvar no Painel
+                    Adicionar ao Painel
                 </button>
             </form>
 
-            <!-- Lista de Itens Cadastrados para Gerenciar -->
             <h4 class="font-semibold text-sm mb-3">Itens Cadastrados</h4>
-            <div id="admin-items-list" class="space-y-2 max-h-48 overflow-y-auto pr-2">
-                <!-- Preenchido via JS -->
-            </div>
+            <div id="admin-items-list" class="space-y-2 max-h-48 overflow-y-auto pr-2"></div>
         </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER CLARO BRASIL -->
     <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
         <p>&copy; 2026 Controle de Qualidade SP - Claro Brasil. Todos os direitos reservados.</p>
     </footer>
 
     <!-- SCRIPT DA APLICAÇÃO -->
     <script>
+        // CONFIGURAÇÃO DO SUPABASE (Opcional: insira suas chaves caso queira autenticação real na nuvem)
+        const SUPABASE_URL = ''; 
+        const SUPABASE_ANON_KEY = '';
+        let supabaseClient = null;
+        
+        try {
+            if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch(e) { console.log("Modo local ativo"); }
+
+        let currentUser = JSON.parse(localStorage.getItem('claro_current_user')) || null;
+        let isSignUpMode = false;
+
         const defaultItems = [
             { id: 1, title: 'Procedimento Operacional Padrão (POP)', category: 'Manuais', description: 'Diretrizes de qualidade para atendimento e processos SP.', link: 'https://onedrive.live.com', date: '03/09/2026' },
             { id: 2, title: 'Planilha de Auditoria e Métricas', category: 'Relatórios', description: 'Acompanhamento diário de indicadores de qualidade.', link: 'https://onedrive.live.com', date: '03/09/2026' }
@@ -139,7 +180,14 @@
 
         let items = JSON.parse(localStorage.getItem('claro_qualidade_items')) || defaultItems;
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (supabaseClient) {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session?.user) {
+                    currentUser = { email: session.user.email };
+                }
+            }
+            updateAuthUI();
             renderContent(items);
             renderCategories();
         });
@@ -149,7 +197,7 @@
             grid.innerHTML = '';
 
             if (data.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Nenhum arquivo cadastrado. Clique em "Adicionar / Gerenciar" no topo.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Nenhum arquivo cadastrado.</div>`;
                 return;
             }
 
@@ -164,12 +212,22 @@
                             <h3 class="font-bold text-base mb-1 text-slate-800 dark:text-slate-100">${item.title}</h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${item.description || 'Sem descrição.'}</p>
                         </div>
-                        <a href="${item.link}" target="_blank" class="w-full flex items-center justify-center gap-2 bg-claro-500 hover:bg-claro-600 text-white font-medium py-2 rounded-xl text-xs transition shadow-sm">
-                            <i class="fa-solid fa-download"></i> Acessar Arquivo
-                        </a>
+                        <button onclick="handleDownload('${item.link}')" class="w-full flex items-center justify-center gap-2 bg-claro-500 hover:bg-claro-600 text-white font-medium py-2 rounded-xl text-xs transition shadow-sm">
+                            <i class="fa-solid fa-download"></i> Baixar Arquivo (Protegido)
+                        </button>
                     </div>
                 `;
             });
+        }
+
+        // Lógica de Proteção de Download por Cadastro/Login
+        function handleDownload(link) {
+            if (currentUser) {
+                window.open(link, '_blank');
+            } else {
+                alert('Atenção: Para baixar ou acessar os arquivos do OneDrive, é necessário realizar o cadastro ou login na plataforma!');
+                openAuthModal();
+            }
         }
 
         function renderCategories() {
@@ -204,6 +262,68 @@
             renderContent(filtered);
         }
 
+        // Gerenciamento de Usuários (Login / Cadastro Local ou Supabase)
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            if (supabaseClient) {
+                try {
+                    if (isSignUpMode) {
+                        const { error } = await supabaseClient.auth.signUp({ email, password });
+                        if (error) throw error;
+                        alert('Cadastro realizado com sucesso!');
+                    } else {
+                        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                        if (error) throw error;
+                        alert('Login efetuado com sucesso!');
+                    }
+                    closeAuthModal();
+                    return;
+                } catch(err) {
+                    alert('Erro: ' + err.message);
+                    return;
+                }
+            }
+
+            // Modo local simulado funcional caso não use chaves do Supabase
+            currentUser = { email };
+            localStorage.setItem('claro_current_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            closeAuthModal();
+            alert(isSignUpMode ? 'Cadastro realizado com sucesso! Downloads liberados.' : 'Login realizado com sucesso! Downloads liberados.');
+        }
+
+        function logout() {
+            if (supabaseClient) supabaseClient.auth.signOut();
+            currentUser = null;
+            localStorage.removeItem('claro_current_user');
+            updateAuthUI();
+            alert('Você saiu da sua conta.');
+        }
+
+        function updateAuthUI() {
+            const container = document.getElementById('auth-container');
+            if (currentUser) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-medium hidden sm:inline text-slate-400">${currentUser.email}</span>
+                        <button onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sair
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
+                    </button>
+                `;
+            }
+        }
+
+        // Adicionar Itens pelo Painel
         function addNewItem(e) {
             e.preventDefault();
             const title = document.getElementById('new-title').value;
@@ -220,11 +340,11 @@
             renderContent(items);
             renderCategories();
             renderAdminList();
-            alert('Item adicionado com sucesso ao Controle de Qualidade SP!');
+            alert('Arquivo cadastrado com sucesso!');
         }
 
         function deleteItem(id) {
-            if (confirm('Deseja realmente remover este arquivo?')) {
+            if (confirm('Deseja remover este item?')) {
                 items = items.filter(i => i.id !== id);
                 localStorage.setItem('claro_qualidade_items', JSON.stringify(items));
                 renderContent(items);
@@ -236,12 +356,10 @@
         function renderAdminList() {
             const listContainer = document.getElementById('admin-items-list');
             listContainer.innerHTML = '';
-
             if (items.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-slate-400">Nenhum item cadastrado.</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-slate-400">Nenhum item.</p>`;
                 return;
             }
-
             items.forEach(item => {
                 listContainer.innerHTML += `
                     <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs">
@@ -249,21 +367,25 @@
                             <span class="font-bold text-slate-700 dark:text-slate-200">${item.title}</span>
                             <span class="ml-2 text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500">${item.category}</span>
                         </div>
-                        <button onclick="deleteItem(${item.id})" class="text-red-500 hover:text-red-700 px-2 py-1 transition">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                        <button onclick="deleteItem(${item.id})" class="text-red-500 hover:text-red-700 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
         }
 
-        function openAdminModal() {
-            renderAdminList();
-            document.getElementById('admin-modal').classList.remove('hidden');
+        // Modais
+        function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+        function openAdminModal() { renderAdminList(); document.getElementById('admin-modal').classList.remove('hidden'); }
+        function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            document.getElementById('auth-modal-title').textContent = isSignUpMode ? 'Criar Nova Conta' : 'Acesse sua Conta';
+            document.getElementById('auth-submit-btn').textContent = isSignUpMode ? 'Cadastrar e Liberar Downloads' : 'Entrar';
+            document.getElementById('auth-toggle-text').textContent = isSignUpMode ? 'Já tem uma conta? Faça login' : 'Não tem uma conta? Cadastre-se';
         }
-        function closeAdminModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        }
+
         function toggleDarkMode() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
