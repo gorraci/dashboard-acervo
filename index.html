@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        claro: { 500: '#ea1d2c', 600: '#c51422', 700: '#9e0e1a' }
+                        claro: { 500: '#DA291C', 600: '#AF272F', 700: '#8F1E26', 800: '#6F151C' }
                     }
                 }
             }
@@ -30,6 +30,18 @@
             background-image: linear-gradient(to bottom, rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.95)), url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
+        }
+        .viewer-toolbar { box-shadow: 0 8px 30px rgba(0,0,0,.22); }
+        .viewer-frame { background:
+            radial-gradient(circle at 20% 20%, rgba(218,41,28,.08), transparent 35%),
+            #090d16; }
+        .status-dot { width:8px; height:8px; border-radius:999px; display:inline-block; }
+        .file-card { transform: translateZ(0); }
+        .file-card:hover { transform: translateY(-2px); }
+        @media (max-width: 640px) {
+            #view-modal { padding: .5rem; }
+            #view-modal > div { border-radius: 1.25rem; }
+            .viewer-actions span { display:none; }
         }
     </style>
 </head>
@@ -150,7 +162,7 @@
                 <div class="mt-8 pt-6 border-t border-slate-800 bg-gradient-to-b from-transparent to-claro-500/5 p-4 rounded-2xl border border-claro-500/20">
                     <h4 class="text-xs font-black text-white mb-1.5 flex items-center gap-2"><i class="fa-solid fa-lightbulb text-claro-500"></i> Dica de Uso</h4>
                     <p class="text-[11px] text-slate-300 leading-relaxed font-medium">
-                        Clique em <b>Visualizar no Sistema</b> para abrir o documento ou pasta diretamente em uma janela protegida interna.
+                        Clique em <b>Visualizar no Sistema</b> para abrir o conteúdo dentro desta página. O botão não redireciona para o Google Drive.
                     </p>
                 </div>
             </div>
@@ -214,25 +226,54 @@
 
     </main>
 
-    <!-- MODAL DE VISUALIZAÇÃO INTERNA INTEGRADA (IMPEEDE SAIR DO SITE) -->
-    <div id="view-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-2xl z-50 hidden flex flex-col p-4 sm:p-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-6xl mx-auto flex flex-col h-full shadow-2xl overflow-hidden">
-            <div class="bg-slate-950 px-6 py-4 flex justify-between items-center border-b border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="bg-claro-500 text-white p-2.5 rounded-xl"><i class="fa-solid fa-folder-open"></i></div>
-                    <div>
-                        <h3 id="view-title" class="font-bold text-sm text-white">Visualizador Protegido</h3>
-                        <p class="text-[10px] text-slate-400">Google Drive Integrado - Claro SP</p>
+    <!-- VISUALIZADOR INTERNO: O CONTEÚDO É ABERTO DENTRO DO SITE -->
+    <div id="view-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-[100] hidden flex flex-col p-2 sm:p-5">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-3xl w-full max-w-7xl mx-auto flex flex-col h-full shadow-2xl overflow-hidden">
+            <div class="viewer-toolbar bg-slate-950/95 px-4 sm:px-6 py-3.5 flex justify-between items-center border-b border-slate-800 shrink-0">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="bg-claro-500 text-white p-2.5 rounded-xl shrink-0"><i id="view-icon" class="fa-solid fa-file-lines"></i></div>
+                    <div class="min-w-0">
+                        <h3 id="view-title" class="font-black text-sm sm:text-base text-white truncate">Visualizador Interno</h3>
+                        <p id="view-status" class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
+                            <span class="status-dot bg-emerald-400 mr-1"></span> Conteúdo carregado dentro do sistema
+                        </p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="closeViewModal()" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
-                        <i class="fa-solid fa-xmark text-base"></i> Fechar Janela
+                <div class="viewer-actions flex items-center gap-2 ml-3">
+                    <button id="viewer-external" type="button" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2.5 rounded-xl text-xs font-bold transition items-center gap-2" title="Abrir fora do sistema">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i><span>Abrir externo</span>
+                    </button>
+                    <button onclick="closeViewModal()" type="button" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-xmark text-base"></i><span>Fechar</span>
                     </button>
                 </div>
             </div>
-            <div class="flex-grow bg-slate-950 relative">
-                <iframe id="view-iframe" src="" class="w-full h-full border-0"></iframe>
+            <div class="viewer-frame flex-grow relative min-h-0">
+                <div id="viewer-loading" class="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/80">
+                    <div class="text-center">
+                        <div class="w-10 h-10 border-4 border-slate-700 border-t-claro-500 rounded-full animate-spin mx-auto mb-4"></div>
+                        <p class="text-sm text-slate-300 font-bold">Carregando conteúdo...</p>
+                        <p class="text-[11px] text-slate-500 mt-1">O arquivo permanece dentro desta página.</p>
+                    </div>
+                </div>
+                <div id="viewer-message" class="hidden absolute inset-0 z-20 flex items-center justify-center p-6">
+                    <div class="max-w-lg text-center bg-slate-900 border border-slate-700 rounded-3xl p-7 shadow-2xl">
+                        <div class="bg-claro-500/15 text-claro-500 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h4 id="viewer-message-title" class="text-white font-black text-lg mb-2">Não foi possível incorporar este conteúdo</h4>
+                        <p id="viewer-message-text" class="text-slate-400 text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+                <iframe
+                    id="view-iframe"
+                    src=""
+                    title="Visualizador interno"
+                    class="w-full h-full border-0 relative z-0"
+                    loading="eager"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allow="autoplay; fullscreen; clipboard-read; clipboard-write">
+                </iframe>
             </div>
         </div>
     </div>
@@ -298,7 +339,8 @@
                 </div>
                 <div>
                     <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Link do Google Drive</label>
-                    <input type="url" id="new-link" required placeholder="https://drive.google.com/..." class="w-full px-4 py-3 rounded-2xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500 font-medium">
+                    <input type="url" id="new-link" required placeholder="https://drive.google.com/file/d/ID/view" class="w-full px-4 py-3 rounded-2xl border border-slate-800 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-claro-500 font-medium">
+                    <p class="text-[10px] text-slate-500 mt-2">Use o link direto do arquivo/pasta. O sistema converte automaticamente para visualização interna.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-black uppercase tracking-wider mb-2 text-slate-400">Descrição</label>
@@ -386,35 +428,168 @@
             if(timeEl) timeEl.textContent = timeStr;
         }
 
+        function escapeHTML(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         function renderContent(data) {
             const grid = document.getElementById('content-grid');
             grid.innerHTML = '';
 
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 grid.innerHTML = `<div class="text-center py-12 text-slate-400 bg-slate-900/60 rounded-3xl border border-slate-800 font-bold">Nenhum arquivo cadastrado.</div>`;
                 return;
             }
 
             data.forEach(item => {
-                grid.innerHTML += `
-                    <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 shadow-2xl hover:border-claro-500/60 transition duration-300 flex flex-col justify-between group">
+                const safeId = String(item.id);
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="file-card bg-slate-900/90 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 shadow-2xl hover:border-claro-500/60 transition duration-300 flex flex-col justify-between group">
                         <div>
-                            <div class="flex justify-between items-start mb-3.5">
-                                <span class="bg-claro-500/15 text-claro-500 text-xs px-3.5 py-1 rounded-full font-black border border-claro-500/30">${item.category}</span>
-                                <span class="text-[11px] text-slate-400 font-mono font-bold"><i class="fa-regular fa-calendar mr-1.5"></i>${item.date || ''}</span>
+                            <div class="flex justify-between items-start mb-3.5 gap-3">
+                                <span class="bg-claro-500/15 text-claro-500 text-xs px-3.5 py-1 rounded-full font-black border border-claro-500/30">${escapeHTML(item.category)}</span>
+                                <span class="text-[11px] text-slate-400 font-mono font-bold whitespace-nowrap">
+                                    <i class="fa-regular fa-calendar mr-1.5"></i>${escapeHTML(item.date || '')}
+                                </span>
                             </div>
-                            <h3 class="font-black text-lg sm:text-xl mb-2 text-white group-hover:text-claro-500 transition tracking-tight">${item.title}</h3>
-                            <p class="text-sm text-slate-300 mb-6 leading-relaxed font-medium">${item.description || 'Sem descrição informada.'}</p>
+                            <h3 class="font-black text-lg sm:text-xl mb-2 text-white group-hover:text-claro-500 transition tracking-tight">${escapeHTML(item.title)}</h3>
+                            <p class="text-sm text-slate-300 mb-6 leading-relaxed font-medium">${escapeHTML(item.description || 'Sem descrição informada.')}</p>
                         </div>
-                        <button onclick="openInternalModal('${item.title.replace(/'/g, "\\'")}', '${item.link}')" class="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-black py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg glow-effect">
-                            <i class="fa-solid fa-eye text-sm"></i> Visualizar no Sistema (Protegido)
+                        <button
+                            type="button"
+                            data-item-id="${escapeHTML(safeId)}"
+                            onclick="openItemById(this.dataset.itemId)"
+                            class="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-black py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg glow-effect">
+                            <i class="fa-solid fa-eye text-sm"></i> Visualizar no Sistema
                         </button>
                     </div>
-                `;
+                `);
             });
         }
 
-        // Função que força a abertura interna e impede redirecionamento externo
+        /*
+         * VISUALIZAÇÃO INTERNA — CORREÇÃO PRINCIPAL
+         *
+         * O erro anterior acontecia porque qualquer URL do Drive recebia
+         * "/preview" no final. Isso NÃO funciona para todos os tipos de link,
+         * especialmente a raiz do Drive e pastas.
+         *
+         * Agora:
+         * - arquivo Drive -> /file/d/ID/preview
+         * - Google Docs -> /document/d/ID/preview
+         * - Google Sheets -> /spreadsheets/d/ID/preview
+         * - Google Slides -> /presentation/d/ID/preview
+         * - pasta Drive -> /embeddedfolderview?id=ID#list
+         * - URL externa -> iframe da URL, sem window.location
+         */
+
+        function openItemById(id) {
+            const item = items.find(x => String(x.id) === String(id));
+            if (!item) {
+                showViewerMessage('Arquivo não encontrado', 'O item selecionado não existe mais no acervo local.');
+                openViewModal();
+                return;
+            }
+            openInternalModal(item.title, item.link);
+        }
+
+        function extractDriveId(url) {
+            try {
+                const u = new URL(url);
+                const patterns = [
+                    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+                    /\/folders\/([a-zA-Z0-9_-]+)/,
+                    /\/document\/d\/([a-zA-Z0-9_-]+)/,
+                    /\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/,
+                    /\/presentation\/d\/([a-zA-Z0-9_-]+)/
+                ];
+
+                for (const regex of patterns) {
+                    const match = u.pathname.match(regex);
+                    if (match) return match[1];
+                }
+
+                const queryId = u.searchParams.get('id');
+                if (queryId) return queryId;
+
+                return null;
+            } catch {
+                return null;
+            }
+        }
+
+        function buildInternalUrl(rawLink) {
+            if (!rawLink) return { url: '', type: 'invalid' };
+
+            let link = String(rawLink).trim();
+
+            // Corrige links que eventualmente tenham sido salvos sem protocolo.
+            if (!/^https?:\/\//i.test(link)) {
+                link = 'https://' + link;
+            }
+
+            let u;
+            try {
+                u = new URL(link);
+            } catch {
+                return { url: '', type: 'invalid' };
+            }
+
+            const host = u.hostname.toLowerCase();
+            const isDrive = host === 'drive.google.com' || host.endsWith('.drive.google.com');
+            const isDocs = host === 'docs.google.com';
+
+            if (isDrive || isDocs) {
+                const id = extractDriveId(link);
+
+                if (!id) {
+                    return { url: '', type: 'drive-root' };
+                }
+
+                if (/\/folders\//i.test(u.pathname)) {
+                    return {
+                        url: `https://drive.google.com/embeddedfolderview?id=${encodeURIComponent(id)}#list`,
+                        type: 'folder'
+                    };
+                }
+
+                if (/\/document\/d\//i.test(u.pathname)) {
+                    return {
+                        url: `https://docs.google.com/document/d/${encodeURIComponent(id)}/preview`,
+                        type: 'document'
+                    };
+                }
+
+                if (/\/spreadsheets\/d\//i.test(u.pathname)) {
+                    return {
+                        url: `https://docs.google.com/spreadsheets/d/${encodeURIComponent(id)}/preview`,
+                        type: 'spreadsheet'
+                    };
+                }
+
+                if (/\/presentation\/d\//i.test(u.pathname)) {
+                    return {
+                        url: `https://docs.google.com/presentation/d/${encodeURIComponent(id)}/preview`,
+                        type: 'presentation'
+                    };
+                }
+
+                // Arquivo comum do Google Drive.
+                return {
+                    url: `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`,
+                    type: 'drive-file'
+                };
+            }
+
+            // Não transformar URLs externas em navegação.
+            return { url: u.href, type: 'external' };
+        }
+
         function openInternalModal(title, link) {
             if (!currentUser) {
                 alert('Atenção: Para visualizar os documentos e pastas do acervo, é necessário realizar o login na plataforma!');
@@ -422,25 +597,103 @@
                 return;
             }
 
-            // Transforma o link do Google Drive para o formato de visualização embutida (preview)
-            let embedUrl = link;
-            if (link.includes('drive.google.com')) {
-                // Remove parâmetros antigos e garante o /preview
-                embedUrl = link.split('/view')[0].split('/edit')[0];
-                if (!embedUrl.endsWith('/preview')) {
-                    embedUrl += '/preview';
+            const result = buildInternalUrl(link);
+            const iframe = document.getElementById('view-iframe');
+            const loading = document.getElementById('viewer-loading');
+            const message = document.getElementById('viewer-message');
+            const externalBtn = document.getElementById('viewer-external');
+            const status = document.getElementById('view-status');
+
+            document.getElementById('view-title').textContent = title || 'Visualizador Interno';
+            iframe.src = '';
+            message.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            externalBtn.classList.remove('flex');
+            externalBtn.classList.add('hidden');
+            externalBtn.onclick = null;
+
+            if (!result.url) {
+                loading.classList.add('hidden');
+
+                if (result.type === 'drive-root') {
+                    showViewerMessage(
+                        'Link do Drive incompleto',
+                        'Este item aponta apenas para o Google Drive, e não para um arquivo ou pasta específica. Edite o item em “Gerenciar Links” e cole o link direto do arquivo/pasta.'
+                    );
+                } else {
+                    showViewerMessage(
+                        'Link inválido',
+                        'O endereço cadastrado não pôde ser interpretado. Verifique o link no cadastro do item.'
+                    );
                 }
+
+                openViewModal();
+                return;
             }
 
-            document.getElementById('view-title').textContent = title;
-            document.getElementById('view-iframe').src = embedUrl;
+            if (result.type === 'folder') {
+                status.innerHTML = '<span class="status-dot bg-emerald-400 mr-1"></span> Pasta integrada no sistema';
+            } else {
+                status.innerHTML = '<span class="status-dot bg-emerald-400 mr-1"></span> Conteúdo integrado no sistema';
+            }
+
+            externalBtn.classList.remove('hidden');
+            externalBtn.classList.add('flex');
+            externalBtn.onclick = () => window.open(String(link), '_blank', 'noopener,noreferrer');
+
+            openViewModal();
+
+            // O iframe recebe somente o endereço de visualização interna.
+            // Nunca usamos window.location, location.href ou <a href> para o botão.
+            iframe.onload = () => {
+                loading.classList.add('hidden');
+            };
+
+            iframe.onerror = () => {
+                loading.classList.add('hidden');
+                showViewerMessage(
+                    'O Google não permitiu a incorporação',
+                    'Isso normalmente ocorre quando o proprietário restringe a visualização, quando o arquivo exige autenticação adicional ou quando o navegador bloqueia a incorporação. O sistema permaneceu nesta página e não redirecionou você.'
+                );
+            };
+
+            iframe.src = result.url;
+
+            // Evita spinner infinito quando o navegador não dispara onload/onerror.
+            setTimeout(() => {
+                loading.classList.add('hidden');
+            }, 12000);
+        }
+
+        function openViewModal() {
             document.getElementById('view-modal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function showViewerMessage(title, text) {
+            document.getElementById('viewer-message-title').textContent = title;
+            document.getElementById('viewer-message-text').textContent = text;
+            document.getElementById('viewer-message').classList.remove('hidden');
         }
 
         function closeViewModal() {
-            document.getElementById('view-modal').classList.add('hidden');
-            document.getElementById('view-iframe').src = '';
+            const modal = document.getElementById('view-modal');
+            const iframe = document.getElementById('view-iframe');
+            modal.classList.add('hidden');
+            iframe.src = '';
+            document.getElementById('viewer-message').classList.add('hidden');
+            document.getElementById('viewer-loading').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }
+
+        // ESC fecha o visualizador.
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('view-modal');
+                if (!modal.classList.contains('hidden')) closeViewModal();
+            }
+        });
 
         function renderCategories() {
             const container = document.getElementById('category-filters');
@@ -489,8 +742,13 @@
         }
 
         function filterContent() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = items.filter(i => i.title.toLowerCase().includes(query) || i.description.toLowerCase().includes(query) || i.category.toLowerCase().includes(query));
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const filtered = items.filter(i => {
+                const title = String(i.title || '').toLowerCase();
+                const description = String(i.description || '').toLowerCase();
+                const category = String(i.category || '').toLowerCase();
+                return title.includes(query) || description.includes(query) || category.includes(query);
+            });
             renderContent(filtered);
         }
 
