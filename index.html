@@ -62,7 +62,7 @@
                 </button>
 
                 <div id="auth-container">
-                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-5 py-2.5 rounded-xl text-xs font-black tracking-wider uppercase transition shadow-lg glow-effect flex items-center gap-2">
+                    <button onclick="openAuthModal()" class="bg-claro-500 hover:bg-claro-600 text-white px-5 py-2.5 rounded-2xl text-xs font-black tracking-wider uppercase transition shadow-lg glow-effect flex items-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Entrar / Cadastrar
                     </button>
                 </div>
@@ -150,7 +150,7 @@
                 <div class="mt-8 pt-6 border-t border-slate-800 bg-gradient-to-b from-transparent to-claro-500/5 p-4 rounded-2xl border border-claro-500/20">
                     <h4 class="text-xs font-black text-white mb-1.5 flex items-center gap-2"><i class="fa-solid fa-lightbulb text-claro-500"></i> Dica de Uso</h4>
                     <p class="text-[11px] text-slate-300 leading-relaxed font-medium">
-                        Clique em <b>Visualizar no Sistema</b> para abrir qualquer pasta ou documento diretamente em uma janela interna integrada.
+                        Clique em <b>Acessar Acervo Protegido</b> para abrir o link autenticado com segurança na nuvem.
                     </p>
                 </div>
             </div>
@@ -214,28 +214,24 @@
 
     </main>
 
-    <!-- MODAL DE PRÉ-VISUALIZAÇÃO INTERNA -->
-    <div id="preview-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-2xl z-50 hidden flex flex-col p-4 sm:p-8">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-6xl mx-auto flex flex-col h-full shadow-2xl overflow-hidden">
-            <div class="bg-slate-950 px-6 py-4 flex justify-between items-center border-b border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="bg-claro-500 text-white p-2 rounded-xl"><i class="fa-solid fa-folder-open"></i></div>
-                    <div>
-                        <h3 id="preview-title" class="font-bold text-sm text-white">Visualizador do Acervo</h3>
-                        <p class="text-[10px] text-slate-400">Google Drive Integrado</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a id="preview-external-link" href="#" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-external-link"></i> Abrir na Aba Nova
-                    </a>
-                    <button onclick="closePreviewModal()" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white p-2 rounded-xl transition">
-                        <i class="fa-solid fa-xmark text-base"></i>
-                    </button>
-                </div>
+    <!-- MODAL DE INTERMEDIAÇÃO SEGURA (GARANTE QUE O USUÁRIO ESTÁ LOGADO ANTES DE ABRIR O LINK) -->
+    <div id="safe-link-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-lg w-full p-8 relative border border-red-500/30 text-center">
+            <button onclick="closeSafeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2.5 rounded-2xl transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="bg-gradient-to-tr from-claro-600 to-red-500 text-white w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-lg glow-effect">
+                <i class="fa-solid fa-shield-halved text-2xl"></i>
             </div>
-            <div class="flex-grow bg-slate-950 relative">
-                <iframe id="preview-iframe" src="" class="w-full h-full border-0"></iframe>
+            <h3 class="text-xl font-black text-white mb-2">Acesso Seguro Autorizado</h3>
+            <p id="safe-modal-title" class="text-xs text-slate-300 font-bold mb-6"></p>
+            <div class="space-y-3">
+                <a id="safe-go-btn" href="#" target="_blank" onclick="closeSafeModal()" class="w-full block bg-claro-500 hover:bg-claro-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-widest shadow-xl glow-effect transition">
+                    <i class="fa-solid fa-external-link mr-2"></i> Abrir Documento no Google Drive
+                </a>
+                <button onclick="closeSafeModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-2xl text-xs transition">
+                    Voltar ao Painel
+                </button>
             </div>
         </div>
     </div>
@@ -363,11 +359,9 @@
         ];
 
         window.addEventListener('DOMContentLoaded', async () => {
-            // Relógio e Data em tempo real
             updateDateTime();
             setInterval(updateDateTime, 1000);
 
-            // Frase aleatória de incentivo
             const randomQuote = incentiveQuotes[Math.floor(Math.random() * incentiveQuotes.length)];
             document.getElementById('incentive-text').textContent = randomQuote;
 
@@ -412,35 +406,28 @@
                             <h3 class="font-black text-lg sm:text-xl mb-2 text-white group-hover:text-claro-500 transition tracking-tight">${item.title}</h3>
                             <p class="text-sm text-slate-300 mb-6 leading-relaxed font-medium">${item.description || 'Sem descrição informada.'}</p>
                         </div>
-                        <button onclick="handlePreview('${item.title}', '${item.link}')" class="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-black py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg glow-effect">
-                            <i class="fa-solid fa-eye text-sm"></i> Visualizar no Sistema (Protegido)
+                        <button onclick="handleSafeAccess('${item.title.replace(/'/g, "\\'")}', '${item.link}')" class="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-claro-500 to-red-600 hover:from-claro-600 hover:to-red-700 text-white font-black py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg glow-effect">
+                            <i class="fa-solid fa-shield-halved text-sm"></i> Acessar Acervo Protegido
                         </button>
                     </div>
                 `;
             });
         }
 
-        function handlePreview(title, link) {
+        function handleSafeAccess(title, link) {
             if (!currentUser) {
-                alert('Atenção: Para visualizar os arquivos e pastas do acervo, é necessário realizar o login na plataforma!');
+                alert('Atenção: Para acessar os documentos e pastas do acervo, é necessário realizar o login na plataforma!');
                 openAuthModal();
                 return;
             }
 
-            let embedLink = link;
-            if (link.includes('drive.google.com')) {
-                embedLink = link.replace('/view?usp=sharing', '/preview').replace('/edit?usp=sharing', '/preview');
-            }
-
-            document.getElementById('preview-title').textContent = title;
-            document.getElementById('preview-iframe').src = embedLink;
-            document.getElementById('preview-external-link').href = link;
-            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('safe-modal-title').textContent = title;
+            document.getElementById('safe-go-btn').href = link;
+            document.getElementById('safe-link-modal').classList.remove('hidden');
         }
 
-        function closePreviewModal() {
-            document.getElementById('preview-modal').classList.add('hidden');
-            document.getElementById('preview-iframe').src = '';
+        function closeSafeModal() {
+            document.getElementById('safe-link-modal').classList.add('hidden');
         }
 
         function renderCategories() {
